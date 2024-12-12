@@ -24,7 +24,6 @@ if (isset($_POST['btn_submit'])) {
         }
 
         // Kiểm tra các trường nhập liệu
-
         if (empty($username)) {
             $loi .= "Vui lòng nhập tên đăng nhập<br>";
         } elseif (strlen($username) < 1) {
@@ -59,7 +58,7 @@ if (isset($_POST['btn_submit'])) {
 
         if(empty($sdt)){
             $loi .= "Vui lòng nhập số điện thoại<br>";
-        } elseif (strlen($sdt < 9)){
+        } elseif (strlen($sdt) < 9) {
             $loi .= "Vui lòng nhập số điện thoại trên 10 kí tự<br>";
         }
 
@@ -67,6 +66,22 @@ if (isset($_POST['btn_submit'])) {
             $loi .= "Vui lòng nhập địa chỉ<br>";
         }
 
+        // Kiểm tra username đã tồn tại
+        if (empty($loi)) {
+            $check_sql = "SELECT username FROM user WHERE username = ?";
+            $check_stmt = $conn->prepare($check_sql);
+            $check_stmt->bind_param("s", $username);
+            $check_stmt->execute();
+            $check_stmt->store_result();
+
+            if ($check_stmt->num_rows > 0) {
+                $loi .= "Tên đăng nhập đã có người dùng, vui lòng chọn tên khác<br>";
+            }
+
+            $check_stmt->close();
+        }
+
+        // Thực hiện chèn dữ liệu nếu không có lỗi
         if (empty($loi)) {
             $sql = "INSERT INTO user (username, password, fullname, birthday, email, sdt, address) VALUES (?, ?, ?, ?, ?, ?, ?)";
             if ($stmt = $conn->prepare($sql)) {
@@ -86,6 +101,7 @@ if (isset($_POST['btn_submit'])) {
         } else {
             $message = '<p style="color:red;">' . $loi . '</p>';
         }
+
         $conn->close();
     }
 }
@@ -95,6 +111,7 @@ if (isset($_GET['message']) && $_GET['message'] == 'success') {
     $message = '<p style="color:green;">Đăng ký thành công!</p>';
 }
 ?>
+
 
 
 <!DOCTYPE html>
