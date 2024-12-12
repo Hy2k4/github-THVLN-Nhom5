@@ -75,7 +75,7 @@ if (isset($_POST['btn_submit'])) {
             $check_stmt->store_result();
 
             if ($check_stmt->num_rows > 0) {
-                $loi .= "Tên đăng nhập đã có người dùng, vui lòng chọn tên khác<br>";
+                $loi .= "Tên đăng nhập đã có người dùng </br> Vui lòng chọn tên khác<br>";
             }
 
             $check_stmt->close();

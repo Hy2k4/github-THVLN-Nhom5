@@ -17,7 +17,23 @@ $product = null;
 if (isset($_GET['id'])) {
     $product_id = intval($_GET['id']);
 
-    $stmt = $conn->prepare("SELECT * FROM products WHERE id = ?");
+    // Truy vấn để lấy thông tin sản phẩm và người bán
+    $stmt = $conn->prepare("
+        SELECT 
+            products.*, 
+            user.username, 
+            user.sdt 
+        FROM 
+            products 
+        LEFT JOIN 
+            user 
+        ON 
+            products.user_username = user.username
+        WHERE 
+            products.id = ?
+    ");
+
+
     $stmt->bind_param("i", $product_id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -32,6 +48,7 @@ if (isset($_GET['id'])) {
 }
 ?>
 
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -40,295 +57,313 @@ if (isset($_GET['id'])) {
     <title>Chi tiết bài đăng</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-    body {
-        font-family: Arial, sans-serif;
-        background-color: #f5f5f5;
-        margin: 0;
-        padding: 0;
-    }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
 
-    .header {
-        background-color: #FB6F6F;
-        padding: 10px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
+        .header {
+            background-color: #FB6F6F;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-    .header img {
-        height: 40px;
-    }
+        .header img {
+            height: 40px;
+        }
 
-    .header .search-container {
-        display: flex;
-        align-items: center;
-        width: 50%;
-    }
+        .header .search-container {
+            display: flex;
+            align-items: center;
+            width: 50%;
+        }
 
-    .header .search-container input {
-        width: 100%;
-        padding: 5px;
-    }
+        .header .search-container input {
+            width: 100%;
+            padding: 5px;
+        }
 
-    .header .search-container .fa {
-        margin: 0 20px;
-        cursor: pointer;
-    }
+        .header .search-container .fa {
+            margin: 0 20px;
+            cursor: pointer;
+        }
 
-    .header .menu {
-        display: flex;
-        align-items: center;
-    }
+        .header .menu {
+            display: flex;
+            align-items: center;
+        }
 
-    .header .menu a {
-        margin-left: 10px;
-        text-decoration: none;
-        color: black;
-        display: flex;
-        align-items: center;
-    }
+        .header .menu a {
+            margin-left: 10px;
+            text-decoration: none;
+            color: black;
+            display: flex;
+            align-items: center;
+        }
 
-    .header .menu a .fa {
-        margin-right: 5px;
-    }
+        .header .menu a .fa {
+            margin-right: 5px;
+        }
 
-    #menu-sidebar {
-        display: none;
-        position: absolute;
-        top: 50px;
-        left: 100px;
-        z-index: 1000;
-        background-color: #FB6F6F;
-        border: 1px solid black;
-        width: 200px;
-        padding: 20px;
-        border-radius: 5px;
-    }
+        #menu-sidebar {
+            display: none;
+            position: absolute;
+            top: 50px;
+            left: 100px;
+            z-index: 1000;
+            background-color: #FB6F6F;
+            border: 1px solid black;
+            width: 200px;
+            padding: 20px;
+            border-radius: 5px;
+        }
 
-    #menu-sidebar.active {
-        display: block;
-    }
+        #menu-sidebar.active {
+            display: block;
+        }
 
-    .button-menu,
-    .menu-item {
-        background-color: #FB6F6F;
-        width: 180px;
-        height: 30px;
-        font-weight: bold;
-        margin: 5px 10px;
-        cursor: pointer;
-        border: none;
-        text-align: center;
-    }
+        .button-menu,
+        .menu-item {
+            background-color: #FB6F6F;
+            width: 180px;
+            height: 30px;
+            font-weight: bold;
+            margin: 5px 10px;
+            cursor: pointer;
+            border: none;
+            text-align: center;
+        }
 
-    .button-menu:hover,
-    .menu-item:hover {
-        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.25);
-        border-bottom: 3px solid black;
-    }
+        .button-menu:hover,
+        .menu-item:hover {
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.25);
+            border-bottom: 3px solid black;
+        }
 
-    .button-menu > a,
-    .menu-item > a {
-        display: block;
-        padding: 4px;
-        text-decoration: none;
-        color: black;
-    }
+        .button-menu > a,
+        .menu-item > a {
+            display: block;
+            padding: 4px;
+            text-decoration: none;
+            color: black;
+        }
 
-    .footer {
-        background-color: #fff;
-        padding: 20px;
-        text-align: center;
-    }
+        .footer {
+            background-color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
 
-    .footer button {
-        background-color: #ffcc00;
-        border: none;
-        padding: 10px 20px;
-        font-size: 16px;
-        cursor: pointer;
-    }
-    #button-logout{
-        display: none;
-        border: 1px solid black;
-        border-radius: 5px;
-    }
-    #logo{
-        margin-left: 30px;
-        text-decoration: none;
-        color: black;
-        font-size: 30px;
-        font-weight: bold;
-        cursor: pointer;
-    }
-    #logo p{
-        margin: 0;
-    }
-    #logoN5{
-        width: 200px;
-        height: 200px;
-    }
-    #logowellcome{
-        height: 200px;
-        width: 200px;
-    }
-    #button-login{
-        border: 1px solid black;
-        border-radius: 5px;
-    }
-    /* midder */
-    .midder {
-        display: flex;
-        margin: 20px;
-    }
+        .footer button {
+            background-color: #ffcc00;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        #button-logout{
+            display: none;
+            border: 1px solid black;
+            border-radius: 5px;
+        }
+        #logo{
+            margin-left: 30px;
+            text-decoration: none;
+            color: black;
+            font-size: 30px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        #logo p{
+            margin: 0;
+        }
+        #logoN5{
+            width: 200px;
+            height: 200px;
+        }
+        #logowellcome{
+            height: 200px;
+            width: 200px;
+        }
+        #button-login{
+            border: 1px solid black;
+            border-radius: 5px;
+        }
+        /* midder */
+        .midder {
+            display: flex;
+            margin: 20px;
+        }
 
-    .midder .left,
-    .midder .right {
-        flex: 1;
-        margin: 10px;
-    }
+        .midder .left,
+        .midder .right {
+            flex: 1;
+            margin: 10px;
+        }
 
-    .left img {
-        max-width: 100%;
-        border-radius: 10px;
-    }
+        .left img {
+            max-width: 100%;
+            border-radius: 10px;
+        }
 
-    .right h2 {
-        margin-bottom: 10px;
-    }
+        .right h2 {
+            margin-bottom: 10px;
+        }
 
-    .right p {
-        margin-bottom: 20px;
-    }
+        .right p {
+            margin-bottom: 20px;
+        }
 
-    .buttons {
-        margin-top: 20px;
-    }
+        .buttons {
+            margin-top: 20px;
+        }
 
-    .buttons button {
-        padding: 10px 20px;
-        margin-right: 10px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-    }
+        .buttons button {
+            padding: 10px 20px;
+            margin-right: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
 
-    .buttons .cart-btn {
-        background-color: #ffcc00;
-    }
+        .buttons .cart-btn {
+            background-color: #ffcc00;
+        }
 
-    .buttons .buy-btn {
-        background-color: #FB6F6F;
-        color: white;
-    }
+        .buttons .buy-btn {
+            background-color: #FB6F6F;
+            color: white;
+        }
 
-    .description > h3{
-        margin: 0;
-        border-bottom: 1px solid black;
-    }
+        .description > h3{
+            margin: 0;
+            border-bottom: 1px solid black;
+        }
 
-    .description{
-        margin-top: 20px;
-        margin-left: 15%;
-        display: inline-block;
-        width: auto;
-        max-width: 400px;
-        height: auto;
-        border: 1px solid black;
-        border-radius: 5px;
-        padding: 5px;
-    }   
+        .description{
+            margin-top: 20px;
+            margin-left: 15%;
+            display: inline-block;
+            width: auto;
+            max-width: 400px;
+            height: auto;
+            border: 1px solid black;
+            border-radius: 5px;
+            padding: 5px;
+        }   
 
-    .specifications {
-        display: flex;
-        justify-content: flex-end; /* Căn chỉnh nội dung trong .specifications sang bên phải */
-        margin-top: 20px;
-        margin-left: 30%;
-        display: inline-block;
-        width: auto;
-        max-width: 400px;
-        height: auto;
-        border: 1px solid black;
-        border-radius: 5px;
-        padding: 5px;
-    }
+        .specifications {
+            display: flex;
+            justify-content: flex-end; /* Căn chỉnh nội dung trong .specifications sang bên phải */
+            margin-top: 20px;
+            margin-left: 30%;
+            display: inline-block;
+            width: auto;
+            max-width: 400px;
+            height: auto;
+            border: 1px solid black;
+            border-radius: 5px;
+            padding: 5px;
+        }
 
-    .specifications p {
-        font-weight: bold;
-        font-size: 1.17em;
-        border-bottom: 1px solid black;
-    }
+        .specifications p {
+            font-weight: bold;
+            font-size: 1.17em;
+            border-bottom: 1px solid black;
+        }
 
 
-    .image-slider {
-        position: relative;
-        width: 400px; /* Giới hạn chiều rộng */
-        height: 400px; /* Giới hạn chiều cao */
-        overflow: hidden;
-        margin: 0 auto; /* Căn giữa */
-        border-radius: 10px; /* Bo góc */
-        background-color: #f9f9f9; /* Màu nền khung hình */
-    }
+        .image-slider {
+            position: relative;
+            width: 400px; /* Giới hạn chiều rộng */
+            height: 400px; /* Giới hạn chiều cao */
+            overflow: hidden;
+            margin: 0 auto; /* Căn giữa */
+            border-radius: 10px; /* Bo góc */
+            background-color: #f9f9f9; /* Màu nền khung hình */
+        }
 
-    .slides {
-        display: flex;
-        transition: transform 0.5s ease-in-out;
-        height: 100%; /* Đảm bảo toàn bộ chiều cao */
-    }
+        .slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            height: 100%; /* Đảm bảo toàn bộ chiều cao */
+        }
 
-    .slides img {
-        width: 400px; /* Đảm bảo chiều rộng phù hợp khung */
-        height: 400px; /* Đảm bảo chiều cao phù hợp khung */
-        object-fit: cover; /* Cắt ảnh để phù hợp với khung */
-        border-radius: 10px; /* Bo góc hình ảnh */
-    }
+        .slides img {
+            width: 400px; /* Đảm bảo chiều rộng phù hợp khung */
+            height: 400px; /* Đảm bảo chiều cao phù hợp khung */
+            object-fit: cover; /* Cắt ảnh để phù hợp với khung */
+            border-radius: 10px; /* Bo góc hình ảnh */
+        }
 
-    button.prev-btn,
-    button.next-btn {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        background-color: rgba(0, 0, 0, 0.5);
-        border: none;
-        color: white;
-        font-size: 24px;
-        padding: 10px;
-        cursor: pointer;
-        z-index: 1000;
-        border-radius: 50%; /* Tạo nút tròn */
-    }
+        button.prev-btn,
+        button.next-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: white;
+            font-size: 24px;
+            padding: 10px;
+            cursor: pointer;
+            z-index: 1000;
+            border-radius: 50%; /* Tạo nút tròn */
+        }
 
-    button.prev-btn {
-        left: 10px;
-    }
+        button.prev-btn {
+            left: 10px;
+        }
 
-    button.next-btn {
-        right: 10px;
-    }
+        button.next-btn {
+            right: 10px;
+        }
 
-    button.prev-btn:hover,
-    button.next-btn:hover {
-        background-color: rgba(0, 0, 0, 0.8);
-    }
+        button.prev-btn:hover,
+        button.next-btn:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
 
-    #container{
-        margin: 0 30px;
-        display: block;
-        width: auto;
-        height: auto;
-        background-color:   #F3F3F3;
-        margin: 0;
-        padding: 0;
-        padding: 10px 0;
-    }
+        #container{
+            margin: 0 30px;
+            display: block;
+            width: auto;
+            height: auto;
+            background-color:   #F3F3F3;
+            margin: 0;
+            padding: 0;
+            padding: 10px 0;
+        }
 
-    p{
-        margin: 0;
-    }
+        p{
+            margin: 0;
+        }
 
-    h3{
-        margin-bottom: 10px;
-    }
+        h3{
+            margin-bottom: 10px;
+        }
+
+        #info-right{
+            border: 1px solid black;
+            padding: 5px;
+            width: 300px;
+            margin-top: 30px;
+            border-radius: 5px;
+        }
+
+        #info-right > h3{
+            margin-top: 5px;
+            
+        }
+
+        #info-right > p{
+            margin: 10px 0;
+            
+        }
     </style>
 </head>
 <body>
@@ -393,7 +428,15 @@ if (isset($_GET['id'])) {
                         <button class="cart-btn">Thêm vào giỏ hàng</button>
                         <button class="buy-btn">Mua ngay</button>
                     </div>
+
+                    <div id="info-right">
+                        <h3>Thông tin người bán:</h3>
+                        <p><strong>Tên người bán:</strong> <?= htmlspecialchars($product['user_username']); ?></p>
+                        <p><strong>Số điện thoại:</strong> (+84) <?= htmlspecialchars($product['sdt']); ?></p>
+                    </div>
                 </div>
+
+
             </div>
 
             <div class="description">
