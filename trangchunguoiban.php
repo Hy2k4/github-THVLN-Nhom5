@@ -38,15 +38,18 @@ if(!isset($_SESSION['login_username'])){
             gap: 15px; /* Khoảng cách giữa các biểu tượng */
             font-size: 24px;
             font-weight: bold;
+            margin-left: 10%;
         }
         .header .search-bar {
             display: flex;
             align-items: center;
             flex-grow: 1;
             margin: 0 20px;
+            justify-content: center;
         }
         .header .search-bar input {
-            width: 100%;
+            min-width: 250px;
+            width: auto;
             padding: 5px;
             font-size: 16px;
             border: none;
@@ -55,7 +58,8 @@ if(!isset($_SESSION['login_username'])){
         .header .icons {
             display: flex;
             align-items: center;
-            gap: 15px; /* Khoảng cách giữa các biểu tượng */
+            gap: 30px; /* Khoảng cách giữa các biểu tượng */
+            margin-right: 10%;
         }
         .header .icons .icon {
             font-size: 20px;
@@ -64,23 +68,41 @@ if(!isset($_SESSION['login_username'])){
         .content {
             padding: 20px;
         }
-        .content .filters {
+        .filters form {
             display: flex;
             justify-content: center;
-            gap: 10px; /* Đặt khoảng cách giữa các nút */
-            margin-bottom: 20px;
+            gap: 30px;
         }
-        .content .filters button {
+        .filters button {
             padding: 10px 20px;
-            font-size: 16px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .filters button:hover {
+            background-color: #e0e0e0;
+        }
+        .search-bar {
             position: relative;
         }
-        .content .filters button i {
-            font-size: 12px;
+        .search-bar input {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .search-bar button {
+            position: relative;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin-left: 5px;
+            border: 1px solid black;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .search-bar button:hover{
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+            opacity: 0.8;
         }
         .dropdown-content {
             display: none;
@@ -174,6 +196,25 @@ if(!isset($_SESSION['login_username'])){
             background-color: #5bc0de;
             color: white;
         }
+        .actions > a{
+            text-decoration: none;
+        }
+        .actions .add:hover{
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+            opacity: 0.8;
+        }
+        .actions .edit:hover{
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+            opacity: 0.8;
+        }
+        .actions .delete:hover{
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+            opacity: 0.8;
+        }
+        .actions .chat:hover{
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+            opacity: 0.8;
+        }
     /* CSS đã di chuyển từ test.php */
     .container {
         padding: 0 30px;
@@ -250,17 +291,24 @@ if(!isset($_SESSION['login_username'])){
         margin-bottom: 20%;
         display: none;
     }
-    
     </style>
 </head>
 <body>
-     <div class="header">
+    <div class="header">
         <div class="logo">
-            <i class="fas fa-bars icon"></i>
-            <span>CSS cho Người Bán</span>
+            <a href="trangchunguoiban.php" style="
+                                            text-decoration: none;
+                                            color: white;
+                                            ">
+                <i class="fas fa-bars icon"></i>
+                <span>CSS cho Người Bán</span>
+            </a>
         </div>
-        <div class="search-bar">
-            <input type="text" placeholder="Tìm kiếm...">
+        <div class="search-bar" style="max-width: 1000px;">
+            <form method="GET" action="">
+                <input type="text" name="search" placeholder="Tìm kiếm...">
+                <button type="submit" id="search-btn">Tìm</button>
+            </form>
         </div>
         <div class="icons">
             <i class="fas fa-history icon" onclick="redirectToTBLS()"></i>
@@ -270,7 +318,7 @@ if(!isset($_SESSION['login_username'])){
     </div>
     <script>
         function redirectToTBLS() {
-            window.location.href = 'TBLS.php';
+            window.location.href = './B3/TBLS.php';
         }
 
         function redirectToTest() {
@@ -278,94 +326,95 @@ if(!isset($_SESSION['login_username'])){
         }
     </script>
     <div class="content">
+        <!-- Form chứa các nút để gửi tham số sắp xếp -->
         <div class="filters">
-            <div class="dropdown">
-                <button><i class="fas fa-caret-down"></i> A → Z</button>
-                <div class="dropdown-content">
-                    <a href="#">A-Z</a>
-                    <a href="#">Z-A</a>
-                </div>
-            </div>
-            <div class="dropdown">
-                <button><i class="fas fa-caret-down"></i> Condition</button>
-                <div class="dropdown-content">
-                    <a href="#">New</a>
-                    <a href="#">Used</a>
-                </div>
-            </div>
-            <div class="dropdown">
-                <button><i class="fas fa-caret-down"></i> Price</button>
-                <div class="dropdown-content">
-                    <a href="#">Low to High</a>
-                    <a href="#">High to Low</a>
-                </div>
-            </div>
-            <div class="dropdown">
-                <button><i class="fas fa-caret-down"></i> Filter</button>
-                <div class="dropdown-content">
-                    <a href="#">All</a>
-                    <a href="#">Available</a>
-                    <a href="#">Sold</a>
-                </div>
-            </div>
+            <form method="GET" action="">
+                <button type="submit" name="sort" value="az">A → Z</button>
+                <button type="submit" name="sort" value="za">Z → A</button>
+                <button type="submit" name="sort" value="low">Low to High</button>
+                <button type="submit" name="sort" value="high">High to Low</button>
+            </form>
         </div>
 
-        
         <div class="container">
         <?php
-            // Kết nối tới cơ sở dữ liệu
-            include './connect/connect.php';
-            $conn = connect_db();
+        // Kết nối tới cơ sở dữ liệu
+        include './connect/connect.php';
+        $conn = connect_db();
 
-            // Truy vấn dữ liệu từ bảng products
-            $sql = "SELECT id, product_name, price, image_path FROM products";
-            $result = $conn->query($sql);
+        // Xử lý tìm kiếm
+        $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+        $searchQuery = "";
 
-            if ($result->num_rows > 0) {
-                // Hiển thị từng sản phẩm
-                while ($row = $result->fetch_assoc()) {
-                    echo '<div class="item">';
-                        echo '<input type="checkbox" class="product-checkbox" name="selected_products[]" value="' . $row['id'] . '">';
-                
-                        $imagePaths = explode(',', $row['image_path']);
-                        $firstImage = $imagePaths[0];
-                        $imagePath = (strpos($firstImage, 'uploads/') !== false)
-                            ? htmlspecialchars($firstImage)
-                            : './uploads/' . htmlspecialchars($firstImage);
-                        $fullPath = (strpos($firstImage, 'uploads/') !== false)
-                            ? __DIR__ . '/' . htmlspecialchars($firstImage)
-                            : __DIR__ . './uploads/' . htmlspecialchars($firstImage);
-                
-                        if (file_exists($fullPath)) {
-                            echo '<img src="' . $imagePath . '" 
-                                alt="Ảnh sản phẩm" 
-                                style="max-width: 100%; height: auto;">';
-                        } else {
-                            echo '<img src="../uploads/default.jpg" 
-                                alt="Ảnh mặc định" 
-                                style="max-width: 100%; height: auto;">';
-                        }
-                
-                        echo '<div class="details">';
-                        echo '<h3>' . htmlspecialchars($row['product_name']) . '</h3>';
-                        echo '<p class="price">' . number_format($row['price'], 0, ".", ".") . ' VNĐ</p>';
-                        echo '<a href="./B2/view_product.php?id=' . $row['id'] . '">Xem chi tiết</a>';
-                        echo '</div>';
-                    echo '</div>';
+        if ($search !== '') {
+            $searchQuery = "WHERE product_name LIKE '%" . $conn->real_escape_string($search) . "%'";
+        }
+
+        // Xử lý tham số sắp xếp
+        $sort = isset($_GET['sort']) ? $_GET['sort'] : '';
+        $orderBy = "";
+
+        switch ($sort) {
+            case 'az':
+                $orderBy = "ORDER BY product_name ASC";
+                break;
+            case 'za':
+                $orderBy = "ORDER BY product_name DESC";
+                break;
+            case 'low':
+                $orderBy = "ORDER BY price ASC";
+                break;
+            case 'high':
+                $orderBy = "ORDER BY price DESC";
+                break;
+            default:
+                $orderBy = ""; // Không sắp xếp nếu không có tham số
+        }
+
+        // Truy vấn dữ liệu từ bảng products với tìm kiếm và sắp xếp
+        $sql = "SELECT id, product_name, price, image_path FROM products $searchQuery $orderBy";
+        $result = $conn->query($sql);
+
+        if ($result->num_rows > 0) {
+            // Hiển thị từng sản phẩm
+            while ($row = $result->fetch_assoc()) {
+                echo '<div class="item">';
+                echo '<input type="checkbox" class="product-checkbox" name="selected_products[]" value="' . $row['id'] . '">';
+
+                $imagePaths = explode(',', $row['image_path']);
+                $firstImage = $imagePaths[0];
+                $imagePath = (strpos($firstImage, 'uploads/') !== false)
+                    ? htmlspecialchars($firstImage)
+                    : './uploads/' . htmlspecialchars($firstImage);
+                $fullPath = (strpos($firstImage, 'uploads/') !== false)
+                    ? __DIR__ . '/' . htmlspecialchars($firstImage)
+                    : __DIR__ . './uploads/' . htmlspecialchars($firstImage);
+
+                if (file_exists($fullPath)) {
+                    echo '<img src="' . $imagePath . '" alt="Ảnh sản phẩm" style="max-width: 100%; height: auto;">';
+                } else {
+                    echo '<img src="../uploads/default.jpg" alt="Ảnh mặc định" style="max-width: 100%; height: auto;">';
                 }
-            } else {
-                echo '<p>Không có sản phẩm nào được tìm thấy.</p>';
+
+                echo '<div class="details">';
+                echo '<h3>' . htmlspecialchars($row['product_name']) . '</h3>';
+                echo '<p class="price">' . number_format($row['price'], 0, ".", ".") . ' VNĐ</p>';
+                echo '<a href="./B2/view_product.php?id=' . $row['id'] . '">Xem chi tiết</a>';
+                echo '</div>';
+                echo '</div>';
             }
+        } else {
+            echo '<p>Không có sản phẩm nào được tìm thấy.</p>';
+        }
 
-            $conn->close();
+        $conn->close();
         ?>
+        </div>
     </div>
-
-
 
     </div>
     <div class="actions">
-       
+        <a href="./B2/baidangmoi.php"><button class="add"><i class="fa-solid fa-plus"></i></button></a>
         <button class="edit"><i class="fas fa-edit"></i></button>
         <button class="delete"><i class="fas fa-trash"></i></button>
         <button class="chat"><i class="fas fa-comment-alt"></i></button>
