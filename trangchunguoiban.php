@@ -190,9 +190,21 @@ if(!isset($_SESSION['login_username'])){
         flex-direction: column;
         justify-content: center;
         height: 200px;
-        width: 10%;
+        max-width: 150px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        margin-bottom: 20px;
+        margin: 10px;
+        text-align: center;
+    }
+    .item:hover {
+        transform: scale(1.05);
+    }
+    .item.selected {
+        background-color: #d9edf7; /* Đổi màu nền cho bài đăng được chọn */
+        border: 2px solid #5bc0de; /* Đường viền cho bài đăng được chọn */
+    }
+    .details{
+        max-height: 60px;
+
     }
     @media (max-width: 1200px) {
         .item {
@@ -233,6 +245,12 @@ if(!isset($_SESSION['login_username'])){
     .details > h3{
         text-align: center;
     }
+    .product-checkbox{
+        margin-left: 80%;
+        margin-bottom: 20%;
+        display: none;
+    }
+    
     </style>
 </head>
 <body>
@@ -307,27 +325,17 @@ if(!isset($_SESSION['login_username'])){
                 // Hiển thị từng sản phẩm
                 while ($row = $result->fetch_assoc()) {
                     echo '<div class="item">';
-                        echo '<a href="./B2/view_product.php?id=' . $row['id'] . '" 
-                            style="text-decoration: none; color: black;"
-                            class="product_items">';
-
-                        // Kiểm tra nếu image_path có chứa nhiều ảnh (tách bằng dấu phẩy)
-                        $imagePaths = explode(',', $row['image_path']); // Tách chuỗi ảnh
-
-                        // Lấy ảnh đầu tiên
+                        echo '<input type="checkbox" class="product-checkbox" name="selected_products[]" value="' . $row['id'] . '">';
+                
+                        $imagePaths = explode(',', $row['image_path']);
                         $firstImage = $imagePaths[0];
-
-                        // Nếu image_path đã bao gồm đường dẫn, giữ nguyên. Nếu không, thêm ./uploads/
                         $imagePath = (strpos($firstImage, 'uploads/') !== false)
-                        ? htmlspecialchars($firstImage) // Đường dẫn đầy đủ, giữ nguyên
-                        : './uploads/' . htmlspecialchars($firstImage); // Chỉ có tên tệp, thêm 'uploads/'
-
-                        // Tạo đường dẫn đầy đủ để kiểm tra file tồn tại
+                            ? htmlspecialchars($firstImage)
+                            : './uploads/' . htmlspecialchars($firstImage);
                         $fullPath = (strpos($firstImage, 'uploads/') !== false)
-                        ? __DIR__ . '/' . htmlspecialchars($firstImage) // Đường dẫn đầy đủ
-                        : __DIR__ . './uploads/' . htmlspecialchars($firstImage); // Thêm 'uploads/'
-
-                        // Kiểm tra file tồn tại
+                            ? __DIR__ . '/' . htmlspecialchars($firstImage)
+                            : __DIR__ . './uploads/' . htmlspecialchars($firstImage);
+                
                         if (file_exists($fullPath)) {
                             echo '<img src="' . $imagePath . '" 
                                 alt="Ảnh sản phẩm" 
@@ -337,12 +345,12 @@ if(!isset($_SESSION['login_username'])){
                                 alt="Ảnh mặc định" 
                                 style="max-width: 100%; height: auto;">';
                         }
-
+                
                         echo '<div class="details">';
                         echo '<h3>' . htmlspecialchars($row['product_name']) . '</h3>';
                         echo '<p class="price">' . number_format($row['price'], 0, ".", ".") . ' VNĐ</p>';
+                        echo '<a href="./B2/view_product.php?id=' . $row['id'] . '">Xem chi tiết</a>';
                         echo '</div>';
-                        echo '</a>';
                     echo '</div>';
                 }
             } else {
@@ -362,5 +370,27 @@ if(!isset($_SESSION['login_username'])){
         <button class="delete"><i class="fas fa-trash"></i></button>
         <button class="chat"><i class="fas fa-comment-alt"></i></button>
     </div>
+
+    <script>
+        // Lấy tất cả các bài đăng
+        const items = document.querySelectorAll('.item');
+
+        items.forEach(item => {
+            item.addEventListener('click', () => {
+                // Tìm checkbox bên trong bài đăng
+                const checkbox = item.querySelector('.product-checkbox');
+                
+                // Thay đổi trạng thái checkbox
+                checkbox.checked = !checkbox.checked;
+                
+                // Thay đổi giao diện bài đăng
+                if (checkbox.checked) {
+                    item.classList.add('selected'); // Thêm class nếu được chọn
+                } else {
+                    item.classList.remove('selected'); // Xóa class nếu bỏ chọn
+                }
+            });
+        });
+    </script>
 </body>
 </html>
