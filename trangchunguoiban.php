@@ -1,3 +1,15 @@
+<?php
+session_start();
+ob_start();
+
+if(!isset($_SESSION['login_username'])){
+    header('Location: ./test.php');
+    exit();
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -162,6 +174,65 @@
             background-color: #5bc0de;
             color: white;
         }
+    /* CSS đã di chuyển từ test.php */
+    .container {
+        padding: 0 30px;
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .item {
+        background-color: #fff;
+        padding: 10px;
+        margin: 10px 10px 10px 0;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        justify-content: center;
+        height: 200px;
+        width: 10%;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+    @media (max-width: 1200px) {
+        .item {
+            width: 30%;
+        }
+    }
+    @media (max-width: 768px) {
+        .item {
+            width: 45%;
+        }
+    }
+    @media (max-width: 480px) {
+        .item {
+            width: 100%;
+        }
+    }
+    .item img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        margin-right: 10px;
+    }
+    .item .details {
+        flex-grow: 1;
+    }
+    .item .details h3 {
+        margin: 0;
+        font-size: 16px;
+    }
+    .item .details p {
+        margin: 5px 0;
+        color: #888;
+    }
+    .item .details .price {
+        color: red;
+        font-weight: bold;
+    }
+    .details > h3{
+        text-align: center;
+    }
     </style>
 </head>
 <body>
@@ -220,32 +291,70 @@
                 </div>
             </div>
         </div>
-        <div class="product-list">
-            <div class="product">
-                <input type="checkbox" class="product-checkbox">
-                <img src="https://www.example.com/redmi_note_13.png" alt="redmi note 13 5G">
-                <div class="details">
-                    <div class="name">redmi note 13 5G</div>
-                    <div class="price">4,500,000₫</div>
-                </div>
-            </div>
-            <div class="product">
-                <input type="checkbox" class="product-checkbox">
-                <img src="https://www.example.com/xiaomi_mi_11.png" alt="Xiaomi mi 11">
-                <div class="details">
-                    <div class="name">Xiaomi mi 11</div>
-                    <div class="price">8,990,000₫</div>
-                </div>
-            </div>
-            <div class="product">
-                <input type="checkbox" class="product-checkbox">
-                <img src="https://www.example.com/iq_z9_5g.png" alt="IQ Z9 5G">
-                <div class="details">
-                    <div class="name">IQ Z9 5G</div>
-                    <div class="price">7,500,000₫</div>
-  </div>
-            </div>
-        </div>
+
+        
+        <div class="container">
+        <?php
+            // Kết nối tới cơ sở dữ liệu
+            include './connect/connect.php';
+            $conn = connect_db();
+
+            // Truy vấn dữ liệu từ bảng products
+            $sql = "SELECT id, product_name, price, image_path FROM products";
+            $result = $conn->query($sql);
+
+            if ($result->num_rows > 0) {
+                // Hiển thị từng sản phẩm
+                while ($row = $result->fetch_assoc()) {
+                    echo '<div class="item">';
+                        echo '<a href="./B2/view_product.php?id=' . $row['id'] . '" 
+                            style="text-decoration: none; color: black;"
+                            class="product_items">';
+
+                        // Kiểm tra nếu image_path có chứa nhiều ảnh (tách bằng dấu phẩy)
+                        $imagePaths = explode(',', $row['image_path']); // Tách chuỗi ảnh
+
+                        // Lấy ảnh đầu tiên
+                        $firstImage = $imagePaths[0];
+
+                        // Nếu image_path đã bao gồm đường dẫn, giữ nguyên. Nếu không, thêm ./uploads/
+                        $imagePath = (strpos($firstImage, 'uploads/') !== false)
+                        ? htmlspecialchars($firstImage) // Đường dẫn đầy đủ, giữ nguyên
+                        : './uploads/' . htmlspecialchars($firstImage); // Chỉ có tên tệp, thêm 'uploads/'
+
+                        // Tạo đường dẫn đầy đủ để kiểm tra file tồn tại
+                        $fullPath = (strpos($firstImage, 'uploads/') !== false)
+                        ? __DIR__ . '/' . htmlspecialchars($firstImage) // Đường dẫn đầy đủ
+                        : __DIR__ . './uploads/' . htmlspecialchars($firstImage); // Thêm 'uploads/'
+
+                        // Kiểm tra file tồn tại
+                        if (file_exists($fullPath)) {
+                            echo '<img src="' . $imagePath . '" 
+                                alt="Ảnh sản phẩm" 
+                                style="max-width: 100%; height: auto;">';
+                        } else {
+                            echo '<img src="../uploads/default.jpg" 
+                                alt="Ảnh mặc định" 
+                                style="max-width: 100%; height: auto;">';
+                        }
+
+                        echo '<div class="details">';
+                        echo '<h3>' . htmlspecialchars($row['product_name']) . '</h3>';
+                        echo '<p class="price">' . number_format($row['price'], 0, ".", ".") . ' VNĐ</p>';
+                        echo '</div>';
+                        echo '</a>';
+                    echo '</div>';
+                }
+            } else {
+                echo '<p>Không có sản phẩm nào được tìm thấy.</p>';
+            }
+
+            $conn->close();
+        ?>
+    </div>
+
+
+
     </div>
     <div class="actions">
        

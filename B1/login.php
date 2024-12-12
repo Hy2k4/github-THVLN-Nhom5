@@ -3,6 +3,13 @@ session_start();
 ob_start(); // Hạn chế lỗi chuyển trang
 include '../connect/connect.php';
 
+// Kiểm tra xem người dùng đã đăng nhập chưa
+if (isset($_SESSION['login_Id'])) {
+    // Nếu đã đăng nhập, chuyển hướng người dùng đến trang test.php
+    header("Location: ../test.php");
+    exit();
+}
+
 if (isset($_POST['btn_dangnhap'])) {
     $usernameoremail = $_POST['username_or_email'];
     $password = $_POST['password'];
@@ -67,6 +74,7 @@ if (isset($_POST['btn_dangnhap'])) {
     $conn->close();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="vi">

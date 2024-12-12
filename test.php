@@ -304,6 +304,9 @@ $ss = isset($_SESSION['login_username']) ? $_SESSION['login_username'] : null;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
             opacity: 0.5;
         }
+        .details > h3{
+            text-align: center;
+        }
     </style>
 </head>
 <body>
@@ -316,7 +319,7 @@ $ss = isset($_SESSION['login_username']) ? $_SESSION['login_username'] : null;
         </div>
         <div class="menu">
             <a href="#"><i class="fa-solid fa-cart-shopping" style="font-size: 20px;"></i> Giỏ hàng</a>
-            <a href="#"><i class="fa-solid fa-pen-to-square" style="font-size: 20px;"></i>Bán hàng</a>
+            <a href="./trangchunguoiban.php"><i class="fa-solid fa-pen-to-square" style="font-size: 20px;"></i>Bán hàng</a>
         </div>
     </div>
     
@@ -383,62 +386,62 @@ $ss = isset($_SESSION['login_username']) ? $_SESSION['login_username'] : null;
 
     <div class="container">
         <?php
-        // Kết nối tới cơ sở dữ liệu
-        include './connect/connect.php';
-        $conn = connect_db();
+            // Kết nối tới cơ sở dữ liệu
+            include './connect/connect.php';
+            $conn = connect_db();
 
-        // Truy vấn dữ liệu từ bảng products
-        $sql = "SELECT id, product_name, price, image_path FROM products";
-        $result = $conn->query($sql);
+            // Truy vấn dữ liệu từ bảng products
+            $sql = "SELECT id, product_name, price, image_path FROM products";
+            $result = $conn->query($sql);
 
-        if ($result->num_rows > 0) {
-            // Hiển thị từng sản phẩm
-            while ($row = $result->fetch_assoc()) {
-                echo '<div class="item">';
-                    echo '<a href="./B2/view_product.php?id=' . $row['id'] . '" 
-                        style="text-decoration: none; color: black;"
-                        class="product_items">';
+            if ($result->num_rows > 0) {
+                // Hiển thị từng sản phẩm
+                while ($row = $result->fetch_assoc()) {
+                    echo '<div class="item">';
+                        echo '<a href="./B2/view_product.php?id=' . $row['id'] . '" 
+                            style="text-decoration: none; color: black;"
+                            class="product_items">';
 
-                    // Kiểm tra nếu image_path có chứa nhiều ảnh (tách bằng dấu phẩy)
-                    $imagePaths = explode(',', $row['image_path']); // Tách chuỗi ảnh
+                        // Kiểm tra nếu image_path có chứa nhiều ảnh (tách bằng dấu phẩy)
+                        $imagePaths = explode(',', $row['image_path']); // Tách chuỗi ảnh
 
-                    // Lấy ảnh đầu tiên
-                    $firstImage = $imagePaths[0];
+                        // Lấy ảnh đầu tiên
+                        $firstImage = $imagePaths[0];
 
-                    // Nếu image_path đã bao gồm đường dẫn, giữ nguyên. Nếu không, thêm ./uploads/
-                    $imagePath = (strpos($firstImage, 'uploads/') !== false)
-                    ? htmlspecialchars($firstImage) // Đường dẫn đầy đủ, giữ nguyên
-                    : './uploads/' . htmlspecialchars($firstImage); // Chỉ có tên tệp, thêm 'uploads/'
+                        // Nếu image_path đã bao gồm đường dẫn, giữ nguyên. Nếu không, thêm ./uploads/
+                        $imagePath = (strpos($firstImage, 'uploads/') !== false)
+                        ? htmlspecialchars($firstImage) // Đường dẫn đầy đủ, giữ nguyên
+                        : './uploads/' . htmlspecialchars($firstImage); // Chỉ có tên tệp, thêm 'uploads/'
 
-                    // Tạo đường dẫn đầy đủ để kiểm tra file tồn tại
-                    $fullPath = (strpos($firstImage, 'uploads/') !== false)
-                    ? __DIR__ . '/' . htmlspecialchars($firstImage) // Đường dẫn đầy đủ
-                    : __DIR__ . '/uploads/' . htmlspecialchars($firstImage); // Thêm 'uploads/'
+                        // Tạo đường dẫn đầy đủ để kiểm tra file tồn tại
+                        $fullPath = (strpos($firstImage, 'uploads/') !== false)
+                        ? __DIR__ . '/' . htmlspecialchars($firstImage) // Đường dẫn đầy đủ
+                        : __DIR__ . './uploads/' . htmlspecialchars($firstImage); // Thêm 'uploads/'
 
-                    // Kiểm tra file tồn tại
-                    if (file_exists($fullPath)) {
-                        echo '<img src="' . $imagePath . '" 
-                            alt="Ảnh sản phẩm" 
-                            style="max-width: 100%; height: auto;">';
-                    } else {
-                        echo '<img src="./uploads/default.jpg" 
-                            alt="Ảnh mặc định" 
-                            style="max-width: 100%; height: auto;">';
-                    }
+                        // Kiểm tra file tồn tại
+                        if (file_exists($fullPath)) {
+                            echo '<img src="' . $imagePath . '" 
+                                alt="Ảnh sản phẩm" 
+                                style="max-width: 100%; height: auto;">';
+                        } else {
+                            echo '<img src="./uploads/default.jpg" 
+                                alt="Ảnh mặc định" 
+                                style="max-width: 100%; height: auto;">';
+                        }
 
-                    echo '<div class="details">';
-                    echo '<h3>' . htmlspecialchars($row['product_name']) . '</h3>';
-                    echo '<p class="price">' . number_format($row['price'], 0, ".", ".") . ' VNĐ</p>';
+                        echo '<div class="details">';
+                        echo '<h3>' . htmlspecialchars($row['product_name']) . '</h3>';
+                        echo '<p class="price">' . number_format($row['price'], 0, ".", ".") . ' VNĐ</p>';
+                        echo '</div>';
+                        echo '</a>';
                     echo '</div>';
-                    echo '</a>';
-                echo '</div>';
+                }
+            } else {
+                echo '<p>Không có sản phẩm nào được tìm thấy.</p>';
             }
-        } else {
-            echo '<p>Không có sản phẩm nào được tìm thấy.</p>';
-        }
 
-        $conn->close();
-    ?>
+            $conn->close();
+        ?>
     </div>
 
     <div class="footer">
