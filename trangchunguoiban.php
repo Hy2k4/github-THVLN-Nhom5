@@ -1,15 +1,3 @@
-<?php
-session_start();
-ob_start();
-
-if(!isset($_SESSION['login_username'])){
-    header('Location: ./test.php');
-    exit();
-}
-
-?>
-
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -38,18 +26,15 @@ if(!isset($_SESSION['login_username'])){
             gap: 15px; /* Khoảng cách giữa các biểu tượng */
             font-size: 24px;
             font-weight: bold;
-            margin-left: 10%;
         }
         .header .search-bar {
             display: flex;
             align-items: center;
             flex-grow: 1;
             margin: 0 20px;
-            justify-content: center;
         }
         .header .search-bar input {
-            min-width: 250px;
-            width: auto;
+            width: 100%;
             padding: 5px;
             font-size: 16px;
             border: none;
@@ -58,8 +43,7 @@ if(!isset($_SESSION['login_username'])){
         .header .icons {
             display: flex;
             align-items: center;
-            gap: 30px; /* Khoảng cách giữa các biểu tượng */
-            margin-right: 10%;
+            gap: 15px; /* Khoảng cách giữa các biểu tượng */
         }
         .header .icons .icon {
             font-size: 20px;
@@ -68,41 +52,23 @@ if(!isset($_SESSION['login_username'])){
         .content {
             padding: 20px;
         }
-        .filters form {
+        .content .filters {
             display: flex;
             justify-content: center;
-            gap: 30px;
+            gap: 10px; /* Đặt khoảng cách giữa các nút */
+            margin-bottom: 20px;
         }
-        .filters button {
+        .content .filters button {
             padding: 10px 20px;
-            border: 1px solid #ccc;
-            background-color: #f9f9f9;
+            font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        .filters button:hover {
-            background-color: #e0e0e0;
-        }
-        .search-bar {
+            display: flex;
+            align-items: center;
+            gap: 5px;
             position: relative;
         }
-        .search-bar input {
-            width: 100%;
-            padding: 10px;
-            box-sizing: border-box;
-        }
-        .search-bar button {
-            position: relative;
-            padding: 5px 10px;
-            cursor: pointer;
-            margin-left: 5px;
-            border: 1px solid black;
-            border-radius: 5px;
-            font-weight: bold;
-        }
-        .search-bar button:hover{
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
-            opacity: 0.8;
+        .content .filters button i {
+            font-size: 12px;
         }
         .dropdown-content {
             display: none;
@@ -196,119 +162,16 @@ if(!isset($_SESSION['login_username'])){
             background-color: #5bc0de;
             color: white;
         }
-        .actions > a{
-            text-decoration: none;
-        }
-        .actions .add:hover{
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
-            opacity: 0.8;
-        }
-        .actions .edit:hover{
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
-            opacity: 0.8;
-        }
-        .actions .delete:hover{
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
-            opacity: 0.8;
-        }
-        .actions .chat:hover{
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
-            opacity: 0.8;
-        }
-    /* CSS đã di chuyển từ test.php */
-    .container {
-        padding: 0 30px;
-        display: flex;
-        flex-wrap: wrap;
-    }
-    .item {
-        background-color: #fff;
-        padding: 10px;
-        margin: 10px 10px 10px 0;
-        border-radius: 5px;
-        display: flex;
-        align-items: center;
-        flex-direction: column;
-        justify-content: center;
-        height: 200px;
-        max-width: 150px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        margin: 10px;
-        text-align: center;
-    }
-    .item:hover {
-        transform: scale(1.05);
-    }
-    .item.selected {
-        background-color: #d9edf7; /* Đổi màu nền cho bài đăng được chọn */
-        border: 2px solid #5bc0de; /* Đường viền cho bài đăng được chọn */
-    }
-    .details{
-        max-height: 60px;
-
-    }
-    @media (max-width: 1200px) {
-        .item {
-            width: 30%;
-        }
-    }
-    @media (max-width: 768px) {
-        .item {
-            width: 45%;
-        }
-    }
-    @media (max-width: 480px) {
-        .item {
-            width: 100%;
-        }
-    }
-    .item img {
-        width: 100px;
-        height: 100px;
-        object-fit: cover;
-        margin-right: 10px;
-    }
-    .item .details {
-        flex-grow: 1;
-    }
-    .item .details h3 {
-        margin: 0;
-        font-size: 16px;
-    }
-    .item .details p {
-        margin: 5px 0;
-        color: #888;
-    }
-    .item .details .price {
-        color: red;
-        font-weight: bold;
-    }
-    .details > h3{
-        text-align: center;
-    }
-    .product-checkbox{
-        margin-left: 80%;
-        margin-bottom: 20%;
-        display: none;
-    }
     </style>
 </head>
 <body>
-    <div class="header">
+   <div class="header">
         <div class="logo">
-            <a href="trangchunguoiban.php" style="
-                                            text-decoration: none;
-                                            color: white;
-                                            ">
-                <i class="fas fa-bars icon"></i>
-                <span>CSS cho Người Bán</span>
-            </a>
+            <i class="fas fa-bars icon"></i>
+            <span>CSS cho Người Bán</span>
         </div>
-        <div class="search-bar" style="max-width: 1000px;">
-            <form method="GET" action="">
-                <input type="text" name="search" placeholder="Tìm kiếm...">
-                <button type="submit" id="search-btn">Tìm</button>
-            </form>
+        <div class="search-bar">
+            <input type="text" placeholder="Tìm kiếm...">
         </div>
         <div class="icons">
             <i class="fas fa-history icon" onclick="redirectToTBLS()"></i>
@@ -316,130 +179,97 @@ if(!isset($_SESSION['login_username'])){
             <i class="fas fa-sync-alt icon" onclick="redirectToTest()"></i>
         </div>
     </div>
-    <script>
+
+
+       <script>
         function redirectToTBLS() {
-            window.location.href = './B3/TBLS.php';
+            window.location.href = 'TBLS.php';
         }
 
         function redirectToTest() {
             window.location.href = 'test.php';
         }
+
+        function redirectToNewPost() {
+            window.location.href = 'baidangmoi.php';
+        }
+
+        function editPost() {
+            // Chức năng chỉnh sửa bài đăng
+            alert('Chỉnh sửa bài đăng');
+            //  chuyển đến trang chỉnh sửa hoặc mở một cửa sổ chỉnh sửa.
+        }
+
+        function deletePost() {
+            // Chức năng xóa bài đăng
+            alert('Xóa bài đăng');
+            //  thêm mã để xóa bài đăng sau khi xác nhận.
+        }
     </script>
     <div class="content">
-        <!-- Form chứa các nút để gửi tham số sắp xếp -->
         <div class="filters">
-            <form method="GET" action="">
-                <button type="submit" name="sort" value="az">A → Z</button>
-                <button type="submit" name="sort" value="za">Z → A</button>
-                <button type="submit" name="sort" value="low">Low to High</button>
-                <button type="submit" name="sort" value="high">High to Low</button>
-            </form>
+            <div class="dropdown">
+                <button><i class="fas fa-caret-down"></i> A → Z</button>
+                <div class="dropdown-content">
+                    <a href="#">A-Z</a>
+                    <a href="#">Z-A</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button><i class="fas fa-caret-down"></i> Condition</button>
+                <div class="dropdown-content">
+                    <a href="#">New</a>
+                    <a href="#">Used</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button><i class="fas fa-caret-down"></i> Price</button>
+                <div class="dropdown-content">
+                    <a href="#">Low to High</a>
+                    <a href="#">High to Low</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button><i class="fas fa-caret-down"></i> Filter</button>
+                <div class="dropdown-content">
+                    <a href="#">All</a>
+                    <a href="#">Available</a>
+                    <a href="#">Sold</a>
+                </div>
+            </div>
         </div>
-
-        <div class="container">
-        <?php
-        // Kết nối tới cơ sở dữ liệu
-        include './connect/connect.php';
-        $conn = connect_db();
-
-        // Xử lý tìm kiếm
-        $search = isset($_GET['search']) ? trim($_GET['search']) : '';
-        $searchQuery = "";
-
-        if ($search !== '') {
-            $searchQuery = "WHERE product_name LIKE '%" . $conn->real_escape_string($search) . "%'";
-        }
-
-        // Xử lý tham số sắp xếp
-        $sort = isset($_GET['sort']) ? $_GET['sort'] : '';
-        $orderBy = "";
-
-        switch ($sort) {
-            case 'az':
-                $orderBy = "ORDER BY product_name ASC";
-                break;
-            case 'za':
-                $orderBy = "ORDER BY product_name DESC";
-                break;
-            case 'low':
-                $orderBy = "ORDER BY price ASC";
-                break;
-            case 'high':
-                $orderBy = "ORDER BY price DESC";
-                break;
-            default:
-                $orderBy = ""; // Không sắp xếp nếu không có tham số
-        }
-
-        // Truy vấn dữ liệu từ bảng products với tìm kiếm và sắp xếp
-        $sql = "SELECT id, product_name, price, image_path FROM products $searchQuery $orderBy";
-        $result = $conn->query($sql);
-
-        if ($result->num_rows > 0) {
-            // Hiển thị từng sản phẩm
-            while ($row = $result->fetch_assoc()) {
-                echo '<div class="item">';
-                echo '<input type="checkbox" class="product-checkbox" name="selected_products[]" value="' . $row['id'] . '">';
-
-                $imagePaths = explode(',', $row['image_path']);
-                $firstImage = $imagePaths[0];
-                $imagePath = (strpos($firstImage, 'uploads/') !== false)
-                    ? htmlspecialchars($firstImage)
-                    : './uploads/' . htmlspecialchars($firstImage);
-                $fullPath = (strpos($firstImage, 'uploads/') !== false)
-                    ? __DIR__ . '/' . htmlspecialchars($firstImage)
-                    : __DIR__ . './uploads/' . htmlspecialchars($firstImage);
-
-                if (file_exists($fullPath)) {
-                    echo '<img src="' . $imagePath . '" alt="Ảnh sản phẩm" style="max-width: 100%; height: auto;">';
-                } else {
-                    echo '<img src="../uploads/default.jpg" alt="Ảnh mặc định" style="max-width: 100%; height: auto;">';
-                }
-
-                echo '<div class="details">';
-                echo '<h3>' . htmlspecialchars($row['product_name']) . '</h3>';
-                echo '<p class="price">' . number_format($row['price'], 0, ".", ".") . ' VNĐ</p>';
-                echo '<a href="./B2/view_product.php?id=' . $row['id'] . '">Xem chi tiết</a>';
-                echo '</div>';
-                echo '</div>';
-            }
-        } else {
-            echo '<p>Không có sản phẩm nào được tìm thấy.</p>';
-        }
-
-        $conn->close();
-        ?>
+        <div class="product-list">
+            <div class="product">
+                <input type="checkbox" class="product-checkbox">
+                <img src="https://www.example.com/redmi_note_13.png" alt="redmi note 13 5G">
+                <div class="details">
+                    <div class="name">redmi note 13 5G</div>
+                    <div class="price">4,500,000₫</div>
+                </div>
+            </div>
+            <div class="product">
+                <input type="checkbox" class="product-checkbox">
+                <img src="https://www.example.com/xiaomi_mi_11.png" alt="Xiaomi mi 11">
+                <div class="details">
+                    <div class="name">Xiaomi mi 11</div>
+                    <div class="price">8,990,000₫</div>
+                </div>
+            </div>
+            <div class="product">
+                <input type="checkbox" class="product-checkbox">
+                <img src="https://www.example.com/iq_z9_5g.png" alt="IQ Z9 5G">
+                <div class="details">
+                    <div class="name">IQ Z9 5G</div>
+                    <div class="price">7,500,000₫</div>
+  </div>
+            </div>
         </div>
-    </div>
-
     </div>
     <div class="actions">
-        <a href="./B2/baidangmoi.php"><button class="add"><i class="fa-solid fa-plus"></i></button></a>
-        <button class="edit"><i class="fas fa-edit"></i></button>
-        <button class="delete"><i class="fas fa-trash"></i></button>
+        <button class="add" onclick="redirectToNewPost()"><i class="fas fa-plus"></i></button>
+        <button class="edit" onclick="editPost()"><i class="fas fa-edit"></i></button>
+        <button class="delete" onclick="deletePost()"><i class="fas fa-trash"></i></button>
         <button class="chat"><i class="fas fa-comment-alt"></i></button>
     </div>
-
-    <script>
-        // Lấy tất cả các bài đăng
-        const items = document.querySelectorAll('.item');
-
-        items.forEach(item => {
-            item.addEventListener('click', () => {
-                // Tìm checkbox bên trong bài đăng
-                const checkbox = item.querySelector('.product-checkbox');
-                
-                // Thay đổi trạng thái checkbox
-                checkbox.checked = !checkbox.checked;
-                
-                // Thay đổi giao diện bài đăng
-                if (checkbox.checked) {
-                    item.classList.add('selected'); // Thêm class nếu được chọn
-                } else {
-                    item.classList.remove('selected'); // Xóa class nếu bỏ chọn
-                }
-            });
-        });
-    </script>
 </body>
 </html>
