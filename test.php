@@ -32,7 +32,8 @@ $ss = isset($_SESSION['login_username']) ? $_SESSION['login_username'] : null;
         .header .search-container {
             display: flex;
             align-items: center;
-            width: 50%;
+            width: 75%;
+            justify-content: space-between;
         }
         .header .search-container input {
             width: 100%;
@@ -307,6 +308,19 @@ $ss = isset($_SESSION['login_username']) ? $_SESSION['login_username'] : null;
         .details > h3{
             text-align: center;
         }
+        #search-btn{
+            height: 40px;
+            border: 1px solid black;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #searchbar{
+            width: 70%;
+            min-width: 200px;
+            height: 30px;
+            border: 1px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -314,7 +328,10 @@ $ss = isset($_SESSION['login_username']) ? $_SESSION['login_username'] : null;
         <a href="./test.php" id="logo"><p>CSS</p></a>
         <div class="search-container">
             <i class="fa fa-bars" id="sidebar" style="font-size: 30px; cursor: pointer;"></i>
-            <input type="text" id="searchbar" placeholder="Tìm kiếm sản phẩm trên hệ thống">
+            <form method="GET" action="">
+                <input type="text" name="search" id="searchbar" placeholder="Tìm kiếm sản phẩm trên hệ thống">
+                <button type="submit" id="search-btn">Tìm</button>
+            </form>
             <i class="fa fa-bell" style="font-size: 30px;"></i>
         </div>
         <div class="menu">
@@ -390,8 +407,16 @@ $ss = isset($_SESSION['login_username']) ? $_SESSION['login_username'] : null;
             include './connect/connect.php';
             $conn = connect_db();
 
+            // Xử lý tìm kiếm
+            $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+            $searchQuery = "";
+
+            if ($search !== '') {
+                $searchQuery = "WHERE product_name LIKE '%" . $conn->real_escape_string($search) . "%'";
+            }
+
             // Truy vấn dữ liệu từ bảng products
-            $sql = "SELECT id, product_name, price, image_path FROM products";
+            $sql = "SELECT id, product_name, price, image_path FROM products $searchQuery";
             $result = $conn->query($sql);
 
             if ($result->num_rows > 0) {
@@ -470,6 +495,8 @@ $ss = isset($_SESSION['login_username']) ? $_SESSION['login_username'] : null;
         sidebar.addEventListener('click', () => {
             menusidebar.classList.toggle('active');
         });   
+
+        
     </script>
 
 
