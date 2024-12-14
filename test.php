@@ -33,7 +33,7 @@ $ss = isset($_SESSION['login_username']) ? $_SESSION['login_username'] : null;
             display: flex;
             align-items: center;
             width: 75%;
-            justify-content: space-between;
+            justify-content: center;
         }
         .header .search-container input {
             width: 100%;
@@ -81,15 +81,6 @@ $ss = isset($_SESSION['login_username']) ? $_SESSION['login_username'] : null;
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
-        }
-        .categories {
-            display: flex;
-            justify-content: space-around;
-            background-color: #fff;
-            padding: 20px;
-        }
-        .categories div {
-            text-align: center;
         }
         .container {
             padding: 0 30px;
@@ -218,6 +209,7 @@ $ss = isset($_SESSION['login_username']) ? $_SESSION['login_username'] : null;
             box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.25);
         }
         #button-logout{
+            margin-top: 10px;
             display: none;
         }
         .menu-item{
@@ -281,30 +273,6 @@ $ss = isset($_SESSION['login_username']) ? $_SESSION['login_username'] : null;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
 
-        .categories-items{
-            display: flex;
-            height: 50px;
-            width: 100px;
-            font-size: 20px;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            background-color: #FB6F6F;
-            border: 1px solid #fff;
-            border-radius: 5px;
-            cursor: pointer;
-            padding: 0;
-        }
-
-        .categories-items > a{
-            text-decoration: none;
-            color: #333;
-        }
-
-        .categories-items:hover{
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-            opacity: 0.5;
-        }
         .details > h3{
             text-align: center;
         }
@@ -315,11 +283,25 @@ $ss = isset($_SESSION['login_username']) ? $_SESSION['login_username'] : null;
             cursor: pointer;
         }
         #searchbar{
-            width: 70%;
-            min-width: 200px;
+            width: 300px;
             height: 30px;
             border: 1px;
             border-radius: 5px;
+        }
+        .filters form {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+        }
+        .filters button {
+            padding: 10px 20px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .filters button:hover {
+            background-color: #e0e0e0;
         }
     </style>
 </head>
@@ -328,7 +310,11 @@ $ss = isset($_SESSION['login_username']) ? $_SESSION['login_username'] : null;
         <a href="./test.php" id="logo"><p>CSS</p></a>
         <div class="search-container">
             <i class="fa fa-bars" id="sidebar" style="font-size: 30px; cursor: pointer;"></i>
-            <form method="GET" action="">
+            <form method="GET" action="" style="
+                                            display: flex;
+                                            justify-content: center;
+                                            width: auto;
+                                        ">
                 <input type="text" name="search" id="searchbar" placeholder="Tìm kiếm sản phẩm trên hệ thống">
                 <button type="submit" id="search-btn">Tìm</button>
             </form>
@@ -348,7 +334,7 @@ $ss = isset($_SESSION['login_username']) ? $_SESSION['login_username'] : null;
                     echo "<p style='
                             text-align: center;
                           '>Người dùng:</p>";
-                    echo "<a href='./null.php' style='
+                    echo "<a href='./B2/thongtinuser.php' style='
                             border-left: 3px solid black;
                             border-right: 3px solid black;
                             text-decoration: none;
@@ -361,12 +347,13 @@ $ss = isset($_SESSION['login_username']) ? $_SESSION['login_username'] : null;
             
         </div>
             <button class="menu-item"><a href="./B2/thongtinuser.php" style="text-decoration: none; color: black;">Thông tin người dùng</a></button>
-            <button class="menu-item"><a href="#" style="text-decoration: none; color: black;">đăng sản phẩm</a></button>
+            <button class="menu-item"><a href="#" style="text-decoration: none; color: black;">Samsung</a></button>
             <button class="menu-item"><a href="#" style="text-decoration: none; color: black;">Iphone</a></button>
-            <button class="menu-item"><a href="#" style="text-decoration: none; color: black;">Laptop</a></button>
-            <button class="menu-item"><a href="#" style="text-decoration: none; color: black;">Android</a></button>
-            <button class="menu-item"><a href="#" style="text-decoration: none; color: black;">Ipad</a></button>
-            <button class="menu-item"><a href="#" style="text-decoration: none; color: black;">Macbook</a></button>
+            <button class="menu-item"><a href="#" style="text-decoration: none; color: black;">Oppo</a></button>
+            <button class="menu-item"><a href="#" style="text-decoration: none; color: black;">Vivo</a></button>
+            <button class="menu-item"><a href="#" style="text-decoration: none; color: black;">Xiaomi</a></button>
+            <button class="menu-item"><a href="#" style="text-decoration: none; color: black;">Realme</a></button>
+            <button class="menu-item"><a href="#" style="text-decoration: none; color: black;">Hãng khác(Other)</a></button>
             <button class="button-menu" id="button-logout"><a href="./B1/del_session.php" style="text-decoration: none; color: black;">Logout</a></button>
     </div>
 
@@ -377,97 +364,105 @@ $ss = isset($_SESSION['login_username']) ? $_SESSION['login_username'] : null;
         <button style="font-weight: bold;">Tìm hiểu ngay!</button>
     </div>
 
-    <div class="categories">
-        <div>
-            <p class="categories-items"><a href="">Apple</a></p>
-        </div>
-        <div>
-            <p class="categories-items"><a href="#">Samsung</a></p>
-        </div>
-        <div>           
-            <p class="categories-items"><a href="#">Oppo</a></p>
-        </div>
-        <div>           
-            <p class="categories-items"><a href="#">Vivo</a></p>
-        </div>
-        <div>
-            <p class="categories-items"><a href="#">Xiaomi</a></p>
-        </div>
-        <div>
-            <p class="categories-items"><a href="#">Realme</a></p>
-        </div>
-        <div>
-            <p class="categories-items"><a href="#">Other</a></p>
-        </div>
+    <div class="filters">
+        <form method="GET" action="">
+            <button type="submit" name="sort" value="az">A → Z</button>
+            <button type="submit" name="sort" value="za">Z → A</button>
+            <button type="submit" name="sort" value="low">Low to High</button>
+            <button type="submit" name="sort" value="high">High to Low</button>
+        </form>
     </div>
+
 
     <div class="container">
-        <?php
-            // Kết nối tới cơ sở dữ liệu
-            include './connect/connect.php';
-            $conn = connect_db();
+    <?php
+    // Kết nối tới cơ sở dữ liệu
+    include './connect/connect.php';
+    $conn = connect_db();
 
-            // Xử lý tìm kiếm
-            $search = isset($_GET['search']) ? trim($_GET['search']) : '';
-            $searchQuery = "";
+    // Xử lý tìm kiếm
+    $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+    $searchQuery = "";
 
-            if ($search !== '') {
-                $searchQuery = "WHERE product_name LIKE '%" . $conn->real_escape_string($search) . "%'";
-            }
+    if ($search !== '') {
+        $searchQuery = "WHERE product_name LIKE '%" . $conn->real_escape_string($search) . "%'";
+    }
 
-            // Truy vấn dữ liệu từ bảng products
-            $sql = "SELECT id, product_name, price, image_path FROM products $searchQuery";
-            $result = $conn->query($sql);
+    // Xử lý tham số sắp xếp
+    $sort = isset($_GET['sort']) ? $_GET['sort'] : '';
+    $orderBy = "";
 
-            if ($result->num_rows > 0) {
-                // Hiển thị từng sản phẩm
-                while ($row = $result->fetch_assoc()) {
-                    echo '<div class="item">';
-                        echo '<a href="./B2/view_product.php?id=' . $row['id'] . '" 
-                            style="text-decoration: none; color: black;"
-                            class="product_items">';
+    switch ($sort) {
+        case 'az':
+            $orderBy = "ORDER BY product_name ASC";
+            break;
+        case 'za':
+            $orderBy = "ORDER BY product_name DESC";
+            break;
+        case 'low':
+            $orderBy = "ORDER BY price ASC";
+            break;
+        case 'high':
+            $orderBy = "ORDER BY price DESC";
+            break;
+        default:
+            $orderBy = ""; // Không sắp xếp nếu không có tham số
+    }
 
-                        // Kiểm tra nếu image_path có chứa nhiều ảnh (tách bằng dấu phẩy)
-                        $imagePaths = explode(',', $row['image_path']); // Tách chuỗi ảnh
+    // Truy vấn dữ liệu từ bảng products với tìm kiếm và sắp xếp
+    $sql = "SELECT id, product_name, price, image_path FROM products $searchQuery $orderBy";
+    $result = $conn->query($sql);
 
-                        // Lấy ảnh đầu tiên
-                        $firstImage = $imagePaths[0];
+    if ($result->num_rows > 0) {
+        // Hiển thị từng sản phẩm
+        while ($row = $result->fetch_assoc()) {
+            echo '<div class="item">';
+                echo '<a href="./B2/view_product.php?id=' . $row['id'] . '" 
+                    style="text-decoration: none; color: black;"
+                    class="product_items">';
 
-                        // Nếu image_path đã bao gồm đường dẫn, giữ nguyên. Nếu không, thêm ./uploads/
-                        $imagePath = (strpos($firstImage, 'uploads/') !== false)
-                        ? htmlspecialchars($firstImage) // Đường dẫn đầy đủ, giữ nguyên
-                        : './uploads/' . htmlspecialchars($firstImage); // Chỉ có tên tệp, thêm 'uploads/'
+                // Kiểm tra nếu image_path có chứa nhiều ảnh (tách bằng dấu phẩy)
+                $imagePaths = explode(',', $row['image_path']); // Tách chuỗi ảnh
 
-                        // Tạo đường dẫn đầy đủ để kiểm tra file tồn tại
-                        $fullPath = (strpos($firstImage, 'uploads/') !== false)
-                        ? __DIR__ . '/' . htmlspecialchars($firstImage) // Đường dẫn đầy đủ
-                        : __DIR__ . './uploads/' . htmlspecialchars($firstImage); // Thêm 'uploads/'
+                // Lấy ảnh đầu tiên
+                $firstImage = $imagePaths[0];
 
-                        // Kiểm tra file tồn tại
-                        if (file_exists($fullPath)) {
-                            echo '<img src="' . $imagePath . '" 
-                                alt="Ảnh sản phẩm" 
-                                style="max-width: 100%; height: auto;">';
-                        } else {
-                            echo '<img src="./uploads/default.jpg" 
-                                alt="Ảnh mặc định" 
-                                style="max-width: 100%; height: auto;">';
-                        }
+                // Nếu image_path đã bao gồm đường dẫn, giữ nguyên. Nếu không, thêm ./uploads/
+                $imagePath = (strpos($firstImage, 'uploads/') !== false)
+                ? htmlspecialchars($firstImage) // Đường dẫn đầy đủ, giữ nguyên
+                : './uploads/' . htmlspecialchars($firstImage); // Chỉ có tên tệp, thêm 'uploads/'
 
-                        echo '<div class="details">';
-                        echo '<h3>' . htmlspecialchars($row['product_name']) . '</h3>';
-                        echo '<p class="price">' . number_format($row['price'], 0, ".", ".") . ' VNĐ</p>';
-                        echo '</div>';
-                        echo '</a>';
-                    echo '</div>';
+                // Tạo đường dẫn đầy đủ để kiểm tra file tồn tại
+                $fullPath = (strpos($firstImage, 'uploads/') !== false)
+                ? __DIR__ . '/' . htmlspecialchars($firstImage) // Đường dẫn đầy đủ
+                : __DIR__ . './uploads/' . htmlspecialchars($firstImage); // Thêm 'uploads/'
+
+                // Kiểm tra file tồn tại
+                if (file_exists($fullPath)) {
+                    echo '<img src="' . $imagePath . '" 
+                        alt="Ảnh sản phẩm" 
+                        style="max-width: 100%; height: auto;">';
+                } else {
+                    echo '<img src="./uploads/default.jpg" 
+                        alt="Ảnh mặc định" 
+                        style="max-width: 100%; height: auto;">';
                 }
-            } else {
-                echo '<p>Không có sản phẩm nào được tìm thấy.</p>';
-            }
 
-            $conn->close();
-        ?>
-    </div>
+                echo '<div class="details">';
+                echo '<h3>' . htmlspecialchars($row['product_name']) . '</h3>';
+                echo '<p class="price">' . number_format($row['price'], 0, ".", ".") . ' VNĐ</p>';
+                echo '</div>';
+                echo '</a>';
+            echo '</div>';
+        }
+    } else {
+        echo '<p>Không có sản phẩm nào được tìm thấy.</p>';
+    }
+
+    $conn->close();
+    ?>
+</div>
+
 
     <div class="footer">
         <img src="./Image/CSS.png" alt="logoNhom5.png" id="logoN5">
@@ -496,7 +491,6 @@ $ss = isset($_SESSION['login_username']) ? $_SESSION['login_username'] : null;
             menusidebar.classList.toggle('active');
         });   
 
-        
     </script>
 
 
