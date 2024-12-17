@@ -338,89 +338,100 @@ if(!isset($_SESSION['login_username'])){
             </form>
         </div>
 
-<form method="POST" action="">
-    <div class="container">
-            <?php
-            // Kết nối tới cơ sở dữ liệu
-            include './connect/connect.php';
-            $conn = connect_db();
+        <form method="POST" action="">
+            <div class="container">
+                <?php
+                // Kết nối tới cơ sở dữ liệu
+                include './connect/connect.php';
+                $conn = connect_db();
 
-            // Xử lý tìm kiếm
-            $search = isset($_GET['search']) ? trim($_GET['search']) : '';
-            $searchQuery = $search !== '' ? "WHERE product_name LIKE '%" . $conn->real_escape_string($search) . "%'" : '';
+                // Xử lý tìm kiếm
+                $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+                $searchQuery = $search !== '' ? "WHERE product_name LIKE '%" . $conn->real_escape_string($search) . "%'" : '';
 
-            // Xử lý tham số sắp xếp
-            $sort = isset($_GET['sort']) ? $_GET['sort'] : '';
-            $orderBy = match ($sort) {
-                'az' => "ORDER BY product_name ASC",
-                'za' => "ORDER BY product_name DESC",
-                'low' => "ORDER BY price ASC",
-                'high' => "ORDER BY price DESC",
-                default => "",
-            };
+                // Xử lý tham số sắp xếp
+                $sort = isset($_GET['sort']) ? $_GET['sort'] : '';
+                $orderBy = match ($sort) {
+                    'az' => "ORDER BY product_name ASC",
+                    'za' => "ORDER BY product_name DESC",
+                    'low' => "ORDER BY price ASC",
+                    'high' => "ORDER BY price DESC",
+                    default => "",
+                };
 
-            $sql = "SELECT id, product_name, price, image_path FROM products $searchQuery $orderBy";
-            $result = $conn->query($sql);
+                $sql = "SELECT id, product_name, price, image_path FROM products $searchQuery $orderBy";
+                $result = $conn->query($sql);
 
-            // Xử lý xóa sản phẩm khi nhấn nút Delete
-            if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_products'])) {
-                $selectedIds = $_POST['selected_products'];
-                $idList = implode(',', array_map('intval', $selectedIds)); // Chuyển đổi các ID sang kiểu số nguyên
-
-                // Xóa các sản phẩm đã chọn
-                $deleteSql = "DELETE FROM products WHERE id IN ($idList)";
-                if ($conn->query($deleteSql) === TRUE) {
-                    //echo '<p>Đã xóa các sản phẩm được chọn thành công.</p>';
-                } else {
-                    echo '<p>Lỗi khi xóa sản phẩm: ' . $conn->error . '</p>';
-                }
-            }
-
-            if ($result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-                    echo '<div class="item">';
-                    echo '<input type="checkbox" class="product-checkbox" name="selected_products[]" value="' . $row['id'] . '">';
-                    $imagePaths = explode(',', $row['image_path']);
-                    $firstImage = $imagePaths[0];
-                    $imagePath = (strpos($firstImage, 'uploads/') !== false)
-                        ? htmlspecialchars($firstImage)
-                        : './uploads/' . htmlspecialchars($firstImage);
-
-                    $fullPath = __DIR__ . '/' . htmlspecialchars($imagePath);
-
-                    if (file_exists($fullPath)) {
-                        echo '<img src="' . $imagePath . '" alt="Ảnh sản phẩm" style="max-width: 100%; height: auto;">';
+                // Xử lý xóa sản phẩm khi nhấn nút Delete
+                if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['selected_products'])) {
+                    $selectedIds = $_POST['selected_products'];
+                    $idList = implode(',', array_map('intval', $selectedIds)); // Chuyển đổi các ID sang kiểu số nguyên
+                    
+                    // Xóa các sản phẩm đã chọn
+                    $deleteSql = "DELETE FROM products WHERE id IN ($idList)";
+                    if ($conn->query($deleteSql) === TRUE) {
+                        //echo 'Đã xóa các sản phẩm được chọn thành công.';
                     } else {
-                        echo '<img src="./uploads/default.jpg" alt="Ảnh mặc định" style="max-width: 100%; height: auto;">';
+                        echo 'Lỗi khi xóa sản phẩm: ' . $conn->error;
                     }
-
-                    echo '<div class="details">';
-                    echo '<h3>' . htmlspecialchars($row['product_name']) . '</h3>';
-                    echo '<p class="price">' . number_format($row['price'], 0, ".", ".") . ' VNĐ</p>';
-                    echo '<a href="./B2/view_product.php?id=' . $row['id'] . '">Xem chi tiết</a>';
-                    echo '</div>';
-                    echo '</div>';
                 }
-            } else {
-                echo '<p>Không có sản phẩm nào được tìm thấy.</p>';
-            }
 
-            $conn->close();
-            ?>
-        </div>    
-        <!-- Form chứa chức năng -->
+                if ($result->num_rows > 0) {
+                    while ($row = $result->fetch_assoc()) {
+                        echo '<div class="item">';
+                        echo '<input type="checkbox" class="product-checkbox" name="selected_products[]" value="' . $row['id'] . '">';
+
+                        // Ensure $row['image_path'] is a string before using explode
+                        if (is_string($row['image_path']) && strpos($row['image_path'], ',') !== false) {
+                            $imagePaths = explode(',', $row['image_path']); // Split by comma if it's a valid string
+                        } else {
+                            // If not a string, treat $row['image_path'] as an array with one element
+                            $imagePaths = (array) $row['image_path'];
+                        }
+
+                        // Get the first image
+                        $firstImage = $imagePaths[0];
+
+                        // Check if the image path already includes 'uploads/'
+                        $imagePath = (strpos($firstImage, 'uploads/') !== false)
+                            ? htmlspecialchars($firstImage)
+                            : './uploads/' . htmlspecialchars($firstImage);
+
+                        // Create the full path to the image file
+                        $fullPath = __DIR__ . '/' . htmlspecialchars($imagePath);
+
+                        // Check if the file exists
+                        if (file_exists($fullPath)) {
+                            echo '<img src="' . $imagePath . '" alt="Ảnh sản phẩm" style="max-width: 100%; height: auto;">';
+                        } else {
+                            echo '<img src="./uploads/default.jpg" alt="Ảnh mặc định" style="max-width: 100%; height: auto;">';
+                        }
+
+                        echo '<div class="details">';
+                        echo '<h3>' . htmlspecialchars($row['product_name']) . '</h3>';
+                        echo '<p class="price">' . number_format($row['price'], 0, ".", ".") . ' VNĐ</p>';
+                        echo '<a href="./B2/view_product.php?id=' . $row['id'] . '">Xem chi tiết</a>';
+                        echo '</div>';
+                        echo '</div>';
+                    }
+                } else {
+                    echo '<p>Không có sản phẩm nào được tìm thấy.</p>';
+                }
+
+                $conn->close();
+                ?>
+            </div>    
+            <!-- Form chứa chức năng -->
             <div class="actions">
                 <a href="./B2/baidangmoi.php"><button type="button" class="add"><i class="fa-solid fa-plus"></i></button></a>
                 <button type="submit" class="delete"><i class="fas fa-trash"></i></button>
                 <button type="button" class="edit"><i class="fas fa-edit"></i></button>
                 <button type="button" class="chat"><i class="fas fa-comment-alt"></i></button>
             </div>
-        
-    </div>
-</form>
+        </form>
+
 
     <script>
-        // Lấy tất cả các bài đăng
         const items = document.querySelectorAll('.item');
 
         items.forEach(item => {
@@ -452,6 +463,100 @@ if(!isset($_SESSION['login_username'])){
             }
         });
         //----------------------------------------------------------
+        document.querySelector('.edit').addEventListener('click', function () {
+            const checkboxes = document.querySelectorAll('.product-checkbox:checked');
+            
+            if (checkboxes.length === 0) {
+                alert("Vui lòng chọn một bài đăng để chỉnh sửa.");
+            } else if (checkboxes.length > 1) {
+                alert("Chỉ có thể chỉnh sửa một bài đăng tại một thời điểm.");
+            } else {
+                const selectedId = checkboxes[0].value;
+
+                // Call history.php to log the action
+                fetch('./B3/history.php', { // URL của file history.php
+                    method: 'POST',
+                    body: new URLSearchParams({
+                        action: 'chỉnh sửa bài đăng',
+                        detail: 'thành công'
+                    })
+                })
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data); // Log history entry result
+                })
+                .catch(error => {
+                    console.error("Error logging history:", error);
+                });
+
+                window.location.href = `edit_post.php?id=${selectedId}`; // Đúng cú pháp
+            }
+        });
+
+        //------------------------------------------------------------------------------------
+        document.querySelector('.add').addEventListener('click', function () {
+            // Log action for creating a new product
+            fetch(' ./B3/history.php', {
+                method: 'POST',
+                body: new URLSearchParams({
+                    action: 'tạo bài đăng',
+                    detail: 'thành công'
+                })
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log(data); // Log history entry result
+            })
+            .catch(error => {
+                console.error("Error logging history:", error);
+            });
+        });
+        //------------------------------------------------------------------------------------
+        document.querySelector('.delete').addEventListener('click', function () {
+            const checkboxes = document.querySelectorAll('.product-checkbox:checked');
+            
+            if (checkboxes.length === 0) {
+                alert("Vui lòng chọn một bài đăng để xóa.");
+            } else {
+                const selectedIds = [];
+                checkboxes.forEach(checkbox => selectedIds.push(checkbox.value));
+
+                // Gửi thông tin ghi lại hành động xóa vào history.php
+                fetch('./B3/history.php', {
+                    method: 'POST',
+                    body: new URLSearchParams({
+                        action: 'xóa bài đăng',
+                        detail: 'thành công'
+                    })
+                })
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data); // Ghi lại kết quả lịch sử
+                })
+                .catch(error => {
+                    console.error("Lỗi ghi lại lịch sử:", error);
+                });
+
+                // Tiến hành xóa sản phẩm
+                const idList = selectedIds.join(',');
+
+                // Tạo form ẩn để gửi POST request với danh sách sản phẩm được chọn
+                const deleteForm = document.createElement('form');
+                deleteForm.method = 'POST';
+                deleteForm.action = 'xoa_san_pham.php'; // Chỉ rõ trang xử lý xóa sản phẩm
+
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'selected_products'; // Đảm bảo rằng server sẽ nhận tên này
+                input.value = idList;
+
+                deleteForm.appendChild(input);
+                document.body.appendChild(deleteForm);
+
+                // Gửi form
+                deleteForm.submit();
+            }
+        });
 
     </script>
 </body>

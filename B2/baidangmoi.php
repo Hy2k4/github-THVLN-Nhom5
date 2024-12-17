@@ -170,104 +170,75 @@ $fullname = $_SESSION['login_fullname'];
             <button><a href="../trangchunguoiban.php"><i class="fas fa-arrow-left"></i>Quay lại</a></button>
         </div>
     </div>
-<form action="../backend/process_product.php" method="POST" enctype="multipart/form-data">
-    <div class="container">
-        <div class="form-group">
-            <label for="product-name">Tên sản phẩm:</label>
-            <input type="text" id="product-name" name="product-name">
-        </div>
-        <div class="form-group">
-            <label for="headline">Tiêu đề:</label>
-            <input type="text" id="headline" name="headline">
-        </div>
-        <div class="form-group">
-            <label for="price">Giá:</label>
-            <input type="text" id="price" name="price">
-        </div>
-        <div class="form-group">
-            <label for="description">Mô tả:</label>
-            <textarea id="description" name="description" rows="4"></textarea>
-        </div>
-        <div class="form-group">
-            <label for="phone-type">Loại điện thoại:</label>
-            <input type="text" id="phone-type" name="phone-type">
-        </div>
-        <div class="form-group">
-            <label for="phone-companies">Hãng điện thoại:</label>
-            <input type="text" id="phone-companies" name="phone-companies">
-        </div>
-        <div class="form-group">
-            <label for="phone-photos">Hình ảnh điện thoại:</label>
-            <div class="upload-btn">
-                <label for="phone-photos-upload">
-                    <i class="fas fa-upload"></i> Tải lên hình ảnh
-                </label>
-                <input type="file" id="phone-photos-upload" name="phone-photos[]" multiple>
+
+    <form action="../backend/process_product.php" method="POST" enctype="multipart/form-data">
+        <div class="container">
+            <div class="form-group">
+                <label for="product-name">Tên sản phẩm:</label>
+                <input type="text" id="product-name" name="product-name">
             </div>
-            <div id="phone-photos-preview"></div> <!-- Hiển thị ảnh đã chọn -->
+            <div class="form-group">
+                <label for="headline">Tiêu đề:</label>
+                <input type="text" id="headline" name="headline">
+            </div>
+            <div class="form-group">
+                <label for="price">Giá:</label>
+                <input type="text" id="price" name="price">
+            </div>
+            <div class="form-group">
+                <label for="description">Mô tả:</label>
+                <textarea id="description" name="description" rows="4"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="phone-type">Loại điện thoại:</label>
+                <input type="text" id="phone-type" name="phone-type">
+            </div>
+            <div class="form-group">
+                <label for="phone-companies">Hãng điện thoại:</label>
+                <input type="text" id="phone-companies" name="phone-companies">
+            </div>
+            <div class="form-group">
+                <label for="phone-photos">Hình ảnh điện thoại:</label>
+                <div class="upload-btn">
+                    <label for="phone-photos-upload">
+                        <i class="fas fa-upload"></i> Tải lên hình ảnh
+                    </label>
+                    <input type="file" id="phone-photos-upload" name="phone-photos[]" multiple>
+                </div>
+                <div id="phone-photos-preview"></div> <!-- Hiển thị ảnh đã chọn -->
+            </div>
+
+            <button class="post-btn">Đăng</button>
         </div>
+    </form>
 
-        <button class="post-btn">Đăng</button>
-    </div>
-</form>
+    <script>
+        // Hiển thị ảnh cho phần hình ảnh điện thoại
+        document.getElementById('phone-photos-upload').onchange = function (event) {
+            const container = document.getElementById('phone-photos-preview');
+            container.innerHTML = ''; // Xóa ảnh cũ trước khi thêm ảnh mới
+            const files = event.target.files;
 
-
-
-<script>
-    // Hiển thị ảnh cho phần hình ảnh điện thoại
-    document.getElementById('phone-photos-upload').onchange = function (event) {
-        const container = document.getElementById('phone-photos-preview');
-        container.innerHTML = ''; // Xóa ảnh cũ trước khi thêm ảnh mới
-        const files = event.target.files;
-
-        Array.from(files).forEach((file, index) => {
-            if (file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = function () {
-                    const img = document.createElement('img');
-                    img.src = reader.result;
-                    // Nếu là ảnh đầu tiên, giữ kích thước lớn, nếu không thu nhỏ lại
-                    if (index === 0) {
-                        img.style.maxWidth = '100%';
-                        img.style.maxHeight = '300px';
-                    } else {
-                        img.style.width = '30px';
-                        img.style.height = '30px';
-                    }
-                    container.appendChild(img); // Thêm ảnh vào container
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-    };
-
-    // Hiển thị ảnh cho phần thông số kỹ thuật
-    document.getElementById('specifications-upload').onchange = function (event) {
-        const container = document.getElementById('specifications-preview');
-        container.innerHTML = ''; // Xóa ảnh cũ trước khi thêm ảnh mới
-        const files = event.target.files;
-
-        Array.from(files).forEach((file, index) => {
-            if (file.type.startsWith('image/')) {
-                const reader = new FileReader();
-                reader.onload = function () {
-                    const img = document.createElement('img');
-                    img.src = reader.result;
-                    // Nếu là ảnh đầu tiên, giữ kích thước lớn, nếu không thu nhỏ lại
-                    if (index === 0) {
-                        img.style.maxWidth = '100%';
-                        img.style.maxHeight = '300px';
-                    } else {
-                        img.style.width = '30px';
-                        img.style.height = '30px';
-                    }
-                    container.appendChild(img); // Thêm ảnh vào container
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-    };
-</script>
-
+            Array.from(files).forEach((file, index) => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function () {
+                        const img = document.createElement('img');
+                        img.src = reader.result;
+                        // Nếu là ảnh đầu tiên, giữ kích thước lớn, nếu không thu nhỏ lại
+                        if (index === 0) {
+                            img.style.maxWidth = '100%';
+                            img.style.maxHeight = '300px';
+                        } else {
+                            img.style.width = '30px';
+                            img.style.height = '30px';
+                        }
+                        container.appendChild(img); // Thêm ảnh vào container
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        };
+    </script>
 </body>
 </html>

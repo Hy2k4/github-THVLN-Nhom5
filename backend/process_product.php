@@ -12,7 +12,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Lấy các giá trị từ form
     $product_name = $_POST['product-name'];
     $headline = $_POST['headline'];
-    $price = $_POST['price'];
+    // Xử lý và làm sạch giá trị price
+    $price = str_replace(['.', ','], '', $_POST['price']); // Remove dots and commas
     $description = $_POST['description'];
     $phone_type = $_POST['phone-type'];
     $phone_company = $_POST['phone-companies'];
@@ -30,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $image_paths = []; // Mảng chứa các đường dẫn ảnh
 
     // Kiểm tra nếu có ảnh tải lên
-    if (isset($_FILES['phone-photos']) && $_FILES['phone-photos']['error'][0] === UPLOAD_ERR_OK) {
+    if (isset($_FILES['phone-photos']) && !empty($_FILES['phone-photos']['name'][0])) {
         $upload_dir = 'uploads/'; // Thư mục lưu ảnh
 
         // Tạo thư mục nếu chưa có

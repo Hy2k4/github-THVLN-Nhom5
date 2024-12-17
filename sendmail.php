@@ -30,7 +30,7 @@ function sendOTP($email, $otp) {
 
         // Nội dung email
         $mail->isHTML(true); // Sử dụng định dạng HTML
-        $mail->Subject = 'Mã OTP xác minh tài khoản'; // Chủ đề email
+        $mail->Subject = "Mã OTP xác minh tài khoản"; // Chủ đề email
         $mail->Body = "Mã OTP của bạn là: <b>{$otp}</b>"; // Nội dung chính
         $mail->AltBody = "Mã OTP của bạn là: {$otp}"; // Nội dung thay thế (dành cho email không hỗ trợ HTML)
         //$mail->SMTPDebug = SMTP::DEBUG_SERVER;

@@ -23,8 +23,8 @@ if (!isset($_SESSION['login_username'])) {
         .icons button { border: 1px solid black; border-radius: 5px; padding: 5px 10px; }
         .icons a { text-decoration: none; color: black; font-weight: bold; }
         .content { display: flex; flex-direction: column; align-items: center; margin: 20px; }
-        .history { width: 80%; max-width: 800px; background-color: white; padding: 20px; border-radius: 5px; }
-        .message { background-color: #5cb85c; color: white; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
+        .mess-box { width: 80%; max-width: 800px; background-color: white; padding: 20px; border-radius: 5px; }
+        .message { background-color:rgb(255, 255, 255); color: white; padding: 10px; margin-bottom: 10px; border-radius: 5px; color: black; border: 1px solid black;}
     </style>
 </head>
 <body>
@@ -39,8 +39,42 @@ if (!isset($_SESSION['login_username'])) {
         <h2>Lịch sử hoạt động</h2>
 
 
-        <div class="history"></div>
-            
+        <div class="mess-box">
+        <?php
+            // Kiểm tra nếu người dùng chưa đăng nhập
+            if (!isset($_SESSION['login_username'])) {
+                header('Location: ../test.php');
+                exit();
+            }
+
+            // Kết nối đến cơ sở dữ liệu
+            include '../connect/connect.php';
+            $conn = connect_db();
+
+            // Truy vấn dữ liệu từ bảng history
+            $sql = "SELECT * FROM history ORDER BY created_at DESC";
+            $result = $conn->query($sql);
+
+            // Kiểm tra nếu có dữ liệu
+            if ($result->num_rows > 0) {
+                // Duyệt qua các dòng dữ liệu và hiển thị
+                while($row = $result->fetch_assoc()) {
+                    echo '<div class="message">';
+                    echo '<strong>Tên người dùng: </strong>' . htmlspecialchars($row['username']) . '<br>';
+                    echo '<strong>Hành động: </strong>' . htmlspecialchars($row['action']) . '<br>';
+                    echo '<strong>Chi tiết: </strong>' . htmlspecialchars($row['details']) . '<br>';
+                    echo '<strong>Thời gian: </strong>' . htmlspecialchars($row['created_at']) . '<br>';
+                    echo '</div>';
+                }
+            } else {
+                echo 'Không có lịch sử hoạt động.';
+            }
+
+            // Đóng kết nối
+            $conn->close();
+            ?>
+
+        </div>
     </div>
 </body>
 </html>
