@@ -240,7 +240,10 @@ if (isset($_GET['id'])) {
         }
 
         .description > h3{
-            margin: 0;
+            margin: 0 0 10px 0;
+        }
+
+        h3{
             border-bottom: 1px solid black;
         }
 
@@ -249,33 +252,13 @@ if (isset($_GET['id'])) {
             margin-left: 15%;
             display: inline-block;
             width: auto;
-            max-width: 400px;
+            min-width: 200px;
+            max-width: 700px;
             height: auto;
             border: 1px solid black;
             border-radius: 5px;
             padding: 5px;
         }   
-
-        .specifications {
-            display: flex;
-            justify-content: flex-end; /* Căn chỉnh nội dung trong .specifications sang bên phải */
-            margin-top: 20px;
-            margin-left: 30%;
-            display: inline-block;
-            width: auto;
-            max-width: 400px;
-            height: auto;
-            border: 1px solid black;
-            border-radius: 5px;
-            padding: 5px;
-        }
-
-        .specifications p {
-            font-weight: bold;
-            font-size: 1.17em;
-            border-bottom: 1px solid black;
-        }
-
 
         .image-slider {
             position: relative;
@@ -341,10 +324,6 @@ if (isset($_GET['id'])) {
 
         p{
             margin: 0;
-        }
-
-        h3{
-            margin-bottom: 10px;
         }
 
         #info-right{
@@ -442,9 +421,6 @@ if (isset($_GET['id'])) {
             <div class="description">
                 <h3>Mô tả sản phẩm:</h3>
                 <p><?= nl2br(htmlspecialchars($product['description'])); ?></p>
-            </div>
-            <div class="specifications">
-                <p>Thông số kỹ thuật:</p>
             </div>
         <?php else: ?>
             <!-- Thông báo lỗi -->

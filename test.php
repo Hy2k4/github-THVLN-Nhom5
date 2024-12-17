@@ -33,7 +33,7 @@ $ss = isset($_SESSION['login_username']) ? $_SESSION['login_username'] : null;
             display: flex;
             align-items: center;
             width: 75%;
-            justify-content: center;
+            justify-content: space-between;
         }
         .header .search-container input {
             width: 100%;
@@ -360,8 +360,6 @@ $ss = isset($_SESSION['login_username']) ? $_SESSION['login_username'] : null;
     <div class="main-banner">
         <img src="./Icon/wellcome.png" alt="Logo wellcome" id="logowellcome">
         <h1>Cellphone Seller System xin chào quý khách</h1>
-        <p>Cùng tìm hiểu các chức năng có trong hệ thống chúng tôi!</p>
-        <button style="font-weight: bold;">Tìm hiểu ngay!</button>
     </div>
 
     <div class="filters">
@@ -468,8 +466,6 @@ $ss = isset($_SESSION['login_username']) ? $_SESSION['login_username'] : null;
         <img src="./Image/CSS.png" alt="logoNhom5.png" id="logoN5">
         <p>Chào mừng bạn đến với hệ thống mua bán điện thoại cũ của nhóm chúng tôi</p>
         <p>Bán hàng tốt, Mua hàng ngon, Trao trọn giá trị!</p>
-        <p>Cần hỗ trợ về vấn đề khác thì hãy bấm nút phía dưới</p>
-        <button><i class="fa-solid fa-handshake"></i> Hỗ trợ ngay</button>
     </div>
 
     <script>

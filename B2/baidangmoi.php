@@ -41,6 +41,30 @@ $fullname = $_SESSION['login_fullname'];
         .header .icons i {
             margin-left: 15px;
             cursor: pointer;
+            margin-right: 5px;
+        }
+        .icons > button > a{
+            text-decoration: none;
+            color: black;
+            font-weight: bold;
+            width: 100px;
+            height: 30px;
+        }
+        .icons > button{
+            height: 30px;
+            width: 100px;
+            padding: 0;
+            border: 1px solid black;
+            border-radius: 5px;
+        }
+        .icons{
+            width: auto;
+            height: auto;
+        }
+        .icons button:hover{
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+            opacity: 0.5;
         }
         .container {
             padding: 20px;
@@ -133,18 +157,17 @@ $fullname = $_SESSION['login_fullname'];
             border-radius: 5px;
             cursor: pointer;
         }
+        .logo{
+            font-size: 20px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        <div class="logo">CSS</div>
+        <div class="logo">CSS - New post from seller</div>
         <div class="icons">
-            <i class="fas fa-bars"></i>
-            <i class="fas fa-arrow-left"></i>
-            <i class="fas fa-history"></i>
-            <i class="fas fa-home"></i>
-            <i class="fas fa-bell"></i>
-            <i class="fas fa-user"></i>
+            <button><a href="../trangchunguoiban.php"><i class="fas fa-arrow-left"></i>Quay lại</a></button>
         </div>
     </div>
 <form action="../backend/process_product.php" method="POST" enctype="multipart/form-data">
@@ -183,16 +206,7 @@ $fullname = $_SESSION['login_fullname'];
             </div>
             <div id="phone-photos-preview"></div> <!-- Hiển thị ảnh đã chọn -->
         </div>
-        <div class="form-group">
-            <label for="specifications">Thông số kỹ thuật:</label>
-            <div class="upload-btn">
-                <label for="specifications-upload">
-                    <i class="fas fa-upload"></i> Tải lên hình ảnh
-                </label>
-                <input type="file" id="specifications-upload" name="specifications[]" multiple>
-            </div>
-            <div id="specifications-preview"></div> <!-- Hiển thị ảnh đã chọn -->
-        </div>
+
         <button class="post-btn">Đăng</button>
     </div>
 </form>

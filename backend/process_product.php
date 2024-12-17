@@ -38,14 +38,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             mkdir('../' . $upload_dir, 0777, true);
         }
 
-        // Duyệt qua các ảnh đã chọn và di chuyển vào thư mục
+        // Duyệt qua các ảnh đã chọn và xử lý
         foreach ($_FILES['phone-photos']['name'] as $index => $image_name) {
             $image_tmp_name = $_FILES['phone-photos']['tmp_name'][$index];
             $image_path = $upload_dir . basename($image_name);
-            
-            // Di chuyển file vào thư mục uploads
-            if (move_uploaded_file($image_tmp_name, '../' . $image_path)) {
+            $full_image_path = '../' . $image_path; // Đường dẫn đầy đủ đến file ảnh
+
+            // Kiểm tra nếu ảnh đã tồn tại
+            if (file_exists($full_image_path)) {
+                // Nếu ảnh đã tồn tại, sử dụng ảnh hiện có
                 $image_paths[] = $image_path; // Thêm đường dẫn ảnh vào mảng
+            } else {
+                // Nếu ảnh chưa tồn tại, di chuyển file vào thư mục uploads
+                if (move_uploaded_file($image_tmp_name, $full_image_path)) {
+                    $image_paths[] = $image_path; // Thêm đường dẫn ảnh vào mảng
+                }
             }
         }
     }
@@ -58,7 +65,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bind_param("ssssssss", $product_name, $headline, $price, $description, $phone_type, $phone_company, $image_paths_string, $user_username);
 
     if ($stmt->execute()) {
-        echo "Bài đăng đã được lưu!";
+        header("Location: ../trangchunguoiban.php"); // Quay lại trang chính
+        exit();
     } else {
         echo "Lỗi: " . $stmt->error;
     }

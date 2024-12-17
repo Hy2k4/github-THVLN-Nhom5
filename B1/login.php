@@ -22,6 +22,7 @@ if (isset($_POST['btn_dangnhap'])) {
         die("Kết nối thất bại: " . $conn->connect_error);
     }
 
+    // Kiểm tra tài khoản admin
     if (($usernameoremail == "admin" || $usernameoremail == "admin@gmail.com") && $password == "admin") {
         // Thiết lập session cho admin
         $_SESSION['login_Id'] = "admin_id";
@@ -41,10 +42,17 @@ if (isset($_POST['btn_dangnhap'])) {
         // Truy vấn cơ sở dữ liệu để kiểm tra người dùng
         $sql = "SELECT * FROM user WHERE (username = ? OR email = ?) AND password = ?";
         $stmt = $conn->prepare($sql);
+
+        if ($stmt === false) {
+            die("Lỗi chuẩn bị truy vấn: " . $conn->error);
+        }
+
+        // Ràng buộc tham số cho truy vấn
         $stmt->bind_param("sss", $usernameoremail, $usernameoremail, $password);
         $stmt->execute();
         $result = $stmt->get_result();
 
+        // Kiểm tra nếu có người dùng hợp lệ
         if ($result->num_rows == 1) {
             $user = $result->fetch_assoc();
             $_SESSION['login_Id'] = $user['ID'];
@@ -61,12 +69,8 @@ if (isset($_POST['btn_dangnhap'])) {
             }
             exit();
         } else {
-            echo "<script>alert('Tên đăng nhập/email hoặc mật khẩu sai hoặc tài khoản không tồn tại')</script>";
+            echo "<script>alert('Tên đăng nhập/email hoặc mật khẩu sai hoặc tài khoản không tồn tại');</script>";
         }
-    }
-
-    if (!$stmt) {
-        die("Lỗi chuẩn bị truy vấn: " . $conn->error);
     }
 
     // Đóng kết nối
@@ -74,7 +78,6 @@ if (isset($_POST['btn_dangnhap'])) {
     $conn->close();
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="vi">
@@ -110,7 +113,6 @@ if (isset($_POST['btn_dangnhap'])) {
         }
         #btnback:hover{
             box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.25);
-
         }
         #logo{
             position: absolute;
@@ -126,13 +128,7 @@ if (isset($_POST['btn_dangnhap'])) {
         }
 
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
-        /*
-        lấy font montserrat website
-        https://fonts.google.com/
-        */
-
         body{
-            /*su dung font web*/
             font-family: "Montserrat", sans-serif;
         }
 
@@ -171,9 +167,6 @@ if (isset($_POST['btn_dangnhap'])) {
             justify-content: center;
             align-items: center;
             min-height: 80vh;
-            /*background-image: url(/images/n1.jpg);
-            background-size: cover;*/
-
         }
 
         label{
@@ -182,7 +175,6 @@ if (isset($_POST['btn_dangnhap'])) {
             padding: 0px 5px;
             left: 5px;
             top: 50%;
-            /*pointer-events: none này dùng để khi t chọn ô text của tk và mk ko chọn dính tên đã đặt*/
             pointer-events: none;
             transform: translateY(-50%);
             background: #fff;
@@ -194,7 +186,6 @@ if (isset($_POST['btn_dangnhap'])) {
             border: 2px solid #1a73e8;
         }
 
-        /*event khi có dữ liệu nhập vào ô thì sẽ giữ nguyên label đặt cho*/
         .form-group input:focus + label, .form-group input:valid + label{
             top: 0px;
             font-size: 15px;
@@ -207,7 +198,6 @@ if (isset($_POST['btn_dangnhap'])) {
             color: #fff;
         }
 
-        /*khi di chuột vào button sẽ mờ đi*/
         input#btn_login:hover{
             opacity: 0.8;
         }
@@ -222,20 +212,17 @@ if (isset($_POST['btn_dangnhap'])) {
         .login-links li {
             display: inline-block;
             padding: 20px;
-
         }
 
         a{
             text-decoration: none;
         }
-
     </style>
 </head>
 <body>
     <div class="header">
         <button id="btnback"><i class="fa-solid fa-left-long" style="margin-right: 3px;"></i><a href="../test.php" style="text-decoration: none; color: black;">Quay lại</a></button>
         <p id="logo">CSS - Cellphone Seller System</p>
-
     </div>
 
     <div id="wrapper">
@@ -251,8 +238,7 @@ if (isset($_POST['btn_dangnhap'])) {
                 <label for="">Mật Khẩu</label>
             </div>
 
-            <input type="submit" value="Login"
-            name="btn_dangnhap" id="btn_login">
+            <input type="submit" value="Login" name="btn_dangnhap" id="btn_login">
 
             <ul class="login-links">
                 <li><a href="./dangky.php" class="btn btn-link">Đăng ký</a></li>

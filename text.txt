@@ -1,3 +1,0 @@
-                <p><strong>Loại điện thoại: </strong><?= htmlspecialchars($product['phone_type']); ?></p>
-                </br>
-                <p><strong>Hãng sản xuất: </strong><?= htmlspecialchars($product['phone_company']); ?></p>

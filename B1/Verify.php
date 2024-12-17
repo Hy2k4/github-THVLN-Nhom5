@@ -37,6 +37,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 $message = "<p id='messgreen'>Đã gửi mã OTP tới email:</br> $email </p
                 >";
             } else {
+                error_log("PHPMailer Error: " . $response);
                 $message = "<p id='messred'>Gửi OTP thất bại, vui lòng thử lại.</p>";
             }
         } else {
