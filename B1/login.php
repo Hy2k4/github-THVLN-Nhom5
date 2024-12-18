@@ -35,7 +35,7 @@ if (isset($_POST['btn_dangnhap'])) {
             unset($_SESSION['redirect_after_login']);
             header("Location: $redirect_url");
         } else {
-            header("Location: ../admin/admin.php");
+            header("Location: ../admin/khoataikhoan.php");
         }
         exit();
     } else {
@@ -55,6 +55,15 @@ if (isset($_POST['btn_dangnhap'])) {
         // Kiểm tra nếu có người dùng hợp lệ
         if ($result->num_rows == 1) {
             $user = $result->fetch_assoc();
+            
+            // Kiểm tra trạng thái tài khoản
+            if ($user['status'] == 0) {
+                // Tài khoản bị khóa, không cho phép đăng nhập
+                echo "<script>alert('Tài khoản đã bị cấm'); window.location.href = 'login.php';</script>";
+                exit();
+            }
+
+            // Nếu tài khoản hợp lệ và chưa bị khóa
             $_SESSION['login_Id'] = $user['ID'];
             $_SESSION['login_username'] = $user['username'];
             $_SESSION['login_fullname'] = $user['fullname'];

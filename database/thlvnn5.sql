@@ -23,6 +23,7 @@ USE `thlvnn5`;
 CREATE TABLE IF NOT EXISTS `chitietdathang` (
   `id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `cart_id` int NOT NULL,
   `product_id` int NOT NULL,
   `quantity` int NOT NULL DEFAULT '1',
   `total_price` decimal(10,2) NOT NULL,
@@ -32,9 +33,22 @@ CREATE TABLE IF NOT EXISTS `chitietdathang` (
   KEY `product_id` (`product_id`),
   CONSTRAINT `chitietdathang_ibfk_1` FOREIGN KEY (`username`) REFERENCES `user` (`username`) ON DELETE CASCADE,
   CONSTRAINT `chitietdathang_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table thlvnn5.chitietdathang: ~0 rows (approximately)
+-- Dumping data for table thlvnn5.chitietdathang: ~3 rows (approximately)
+INSERT INTO `chitietdathang` (`id`, `username`, `cart_id`, `product_id`, `quantity`, `total_price`, `created_at`) VALUES
+	(56, 'test', 0, 38, 1, 4990000.00, '2024-12-19 01:51:25'),
+	(57, 'test', 0, 38, 1, 4990000.00, '2024-12-19 01:51:44'),
+	(58, 'test', 0, 38, 1, 4990000.00, '2024-12-19 01:52:11'),
+	(59, 'test', 0, 38, 1, 4990000.00, '2024-12-19 01:52:51'),
+	(60, 'test', 0, 38, 1, 4990000.00, '2024-12-19 02:01:40'),
+	(61, 'test', 0, 38, 1, 4990000.00, '2024-12-19 02:01:55'),
+	(62, 'test', 0, 38, 1, 4990000.00, '2024-12-19 02:02:06'),
+	(63, 'test', 0, 38, 1, 4990000.00, '2024-12-19 02:12:37'),
+	(64, 'test', 0, 38, 1, 4990000.00, '2024-12-19 02:13:13'),
+	(65, 'test', 0, 38, 1, 4990000.00, '2024-12-19 02:28:49'),
+	(67, 'test', 71, 38, 1, 4990000.00, '2024-12-19 02:38:59'),
+	(68, 'test', 72, 38, 1, 4990000.00, '2024-12-19 02:41:17');
 
 -- Dumping structure for table thlvnn5.giohang
 CREATE TABLE IF NOT EXISTS `giohang` (
@@ -45,13 +59,18 @@ CREATE TABLE IF NOT EXISTS `giohang` (
   `product_id` int DEFAULT NULL,
   `quantity` int DEFAULT '1',
   PRIMARY KEY (`GioHangID`)
-) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table thlvnn5.giohang: ~3 rows (approximately)
+-- Dumping data for table thlvnn5.giohang: ~8 rows (approximately)
 INSERT INTO `giohang` (`GioHangID`, `NgayTao`, `TrangThai`, `username`, `product_id`, `quantity`) VALUES
 	(2, '2024-12-18 10:27:21', 'Chưa thanh toán', 'test', 38, 1),
 	(4, '2024-12-18 11:19:18', 'Chưa thanh toán', 'test', 25, 1),
-	(52, '2024-12-19 01:01:32', 'Chưa thanh toán', 'test', 5, 1);
+	(52, '2024-12-19 01:01:32', 'Chưa thanh toán', 'test', 5, 1),
+	(60, '2024-12-19 02:12:37', 'Chưa thanh toán', 'test', NULL, 1),
+	(61, '2024-12-19 02:13:13', 'Chưa thanh toán', 'test', NULL, 1),
+	(67, '2024-12-19 02:28:49', 'Chưa thanh toán', 'test', NULL, 1),
+	(71, '2024-12-19 02:38:59', 'Chưa thanh toán', 'test', NULL, 1),
+	(72, '2024-12-19 02:41:17', 'Chưa thanh toán', 'test', NULL, 1);
 
 -- Dumping structure for table thlvnn5.history
 CREATE TABLE IF NOT EXISTS `history` (
@@ -69,6 +88,21 @@ INSERT INTO `history` (`id`, `username`, `action`, `details`, `created_at`) VALU
 	(31, 'test', 'chỉnh sửa bài đăng', 'thành công', '2024-12-18 01:10:47'),
 	(32, 'test', 'tạo bài đăng', 'thành công', '2024-12-18 01:11:05');
 
+-- Dumping structure for table thlvnn5.messages
+CREATE TABLE IF NOT EXISTS `messages` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `message` text COLLATE utf8mb4_unicode_ci,
+  `timestamp` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Dumping data for table thlvnn5.messages: ~0 rows (approximately)
+INSERT INTO `messages` (`id`, `username`, `message`, `timestamp`) VALUES
+	(1, 'User', 'hello', '2024-12-18 19:56:45'),
+	(2, 'User', 'hello', '2024-12-18 20:08:54'),
+	(3, 'test', 'hello', '2024-12-18 20:11:51');
+
 -- Dumping structure for table thlvnn5.products
 CREATE TABLE IF NOT EXISTS `products` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -82,15 +116,16 @@ CREATE TABLE IF NOT EXISTS `products` (
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `user_username` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status_products` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `fk_user_id` (`user_username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- Dumping data for table thlvnn5.products: ~3 rows (approximately)
-INSERT INTO `products` (`id`, `product_name`, `headline`, `price`, `description`, `phone_type`, `phone_company`, `image_path`, `created_at`, `updated_at`, `user_username`) VALUES
-	(5, 'samsung S20', 'bán SS S20 like new', 4990000.00, 'ib để xem chi tiết', 'SamSung S', 'Samsung', 'uploads/S20.jpg', '2024-12-08 14:32:23', '2024-12-12 13:39:05', 'test'),
-	(25, 'iphone 12', 'bán ip 12', 7000000.00, '', '', 'apple', 'uploads/ip12.jpg,uploads/ip12p2.jpg,uploads/ip12p3.jpg', '2024-12-17 15:30:37', '2024-12-17 18:10:54', 'test'),
-	(38, 'test 15', 'test', 4990000.00, '', '', 'test', 'uploads/HoLeHoang.jpg', '2024-12-17 18:11:11', '2024-12-17 18:11:11', 'test');
+INSERT INTO `products` (`id`, `product_name`, `headline`, `price`, `description`, `phone_type`, `phone_company`, `image_path`, `created_at`, `updated_at`, `user_username`, `status_products`) VALUES
+	(5, 'samsung S20', 'bán SS S20 like new', 4990000.00, 'ib để xem chi tiết', 'SamSung S', 'Samsung', 'uploads/S20.jpg', '2024-12-08 14:32:23', '2024-12-12 13:39:05', 'test', '1'),
+	(25, 'iphone 12', 'bán ip 12', 7000000.00, '', '', 'apple', 'uploads/ip12.jpg,uploads/ip12p2.jpg,uploads/ip12p3.jpg', '2024-12-17 15:30:37', '2024-12-17 18:10:54', 'test', '1'),
+	(38, 'test 15', 'test', 4990000.00, '', '', 'test', 'uploads/HoLeHoang.jpg', '2024-12-17 18:11:11', '2024-12-17 18:11:11', 'test', '1');
 
 -- Dumping structure for table thlvnn5.user
 CREATE TABLE IF NOT EXISTS `user` (
@@ -102,16 +137,17 @@ CREATE TABLE IF NOT EXISTS `user` (
   `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `sdt` int DEFAULT NULL,
   `address` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT '1',
   PRIMARY KEY (`ID`),
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='đây là bảng thông tin người dùng';
 
--- Dumping data for table thlvnn5.user: ~3 rows (approximately)
-INSERT INTO `user` (`ID`, `username`, `password`, `fullname`, `birthday`, `email`, `sdt`, `address`) VALUES
-	(1, 'admin', 'admin', 'admin', '2000-12-01', 'admin@gmail.com', 123456789, '01 Nguyễn Thái Học'),
-	(2, 'test', 'Hy_201004', 'Nguyễn Khang Hy', '2004-10-20', 'khanghynguyen15@gmail.com', 792456036, '07 Vũ Bảo, Ngô Mây, TP.Quy Nhơn'),
-	(3, 'hy', '1234', 'Nghy', '2000-10-20', 'nguyenhy2k4@gmail.com', 867901082, '09 vu bao'),
-	(4, 'hoangngu', 'hoang_12345', 'Hồ Lê Hoàng', '2024-12-01', 'holehoang1903@gmail.com', 708731564, '01 NTH');
+-- Dumping data for table thlvnn5.user: ~4 rows (approximately)
+INSERT INTO `user` (`ID`, `username`, `password`, `fullname`, `birthday`, `email`, `sdt`, `address`, `status`) VALUES
+	(1, 'admin', 'admin', 'admin', '2000-12-01', 'admin@gmail.com', 123456789, '01 Nguyễn Thái Học', '1'),
+	(2, 'test', 'Hy_201004', 'Nguyễn Khang Hy', '2004-10-20', 'khanghynguyen15@gmail.com', 792456036, '07 Vũ Bảo, Ngô Mây, TP.Quy Nhơn', '1'),
+	(3, 'hy', '1234', 'Nghy', '2000-10-20', 'nguyenhy2k4@gmail.com', 867901082, '09 vu bao', '1'),
+	(4, 'hoangngu', '1234', 'Hồ Lê Hoàng', '2024-12-01', 'holehoang1903@gmail.com', 708731564, '01 NTH', '0');
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

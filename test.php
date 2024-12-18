@@ -377,13 +377,13 @@ $ss = isset($_SESSION['login_username']) ? $_SESSION['login_username'] : null;
             
         </div>
             <button class="menu-item"><a href="./B2/thongtinuser.php" style="text-decoration: none; color: black;">Thông tin người dùng</a></button>
-            <button class="menu-item"><a href="#" style="text-decoration: none; color: black;">Samsung</a></button>
-            <button class="menu-item"><a href="#" style="text-decoration: none; color: black;">Iphone</a></button>
-            <button class="menu-item"><a href="#" style="text-decoration: none; color: black;">Oppo</a></button>
-            <button class="menu-item"><a href="#" style="text-decoration: none; color: black;">Vivo</a></button>
-            <button class="menu-item"><a href="#" style="text-decoration: none; color: black;">Xiaomi</a></button>
-            <button class="menu-item"><a href="#" style="text-decoration: none; color: black;">Realme</a></button>
-            <button class="menu-item"><a href="#" style="text-decoration: none; color: black;">Hãng khác(Other)</a></button>
+            <button class="menu-item"><a href="?brand=Samsung" style="text-decoration: none; color: black;">Samsung</a></button>
+            <button class="menu-item"><a href="?brand=Apple" style="text-decoration: none; color: black;">Iphone</a></button>
+            <button class="menu-item"><a href="?brand=Oppo" style="text-decoration: none; color: black;">Oppo</a></button>
+            <button class="menu-item"><a href="?brand=Vivo" style="text-decoration: none; color: black;">Vivo</a></button>
+            <button class="menu-item"><a href="?brand=Xiaomi" style="text-decoration: none; color: black;">Xiaomi</a></button>
+            <button class="menu-item"><a href="?brand=Realme" style="text-decoration: none; color: black;">Realme</a></button>
+            <button class="menu-item"><a href="./test.php" style="text-decoration: none; color: black;">Hãng khác(Other)</a></button>
             <button class="button-menu" id="button-logout"><a href="./B1/del_session.php" style="text-decoration: none; color: black;">Logout</a></button>
     </div>
 
@@ -404,91 +404,114 @@ $ss = isset($_SESSION['login_username']) ? $_SESSION['login_username'] : null;
 
     <div class="container">
     <?php
-    // Kết nối tới cơ sở dữ liệu
-    include './connect/connect.php';
-    $conn = connect_db();
+// Kết nối tới cơ sở dữ liệu
+include './connect/connect.php';
+$conn = connect_db();
 
-    // Xử lý tìm kiếm
-    $search = isset($_GET['search']) ? trim($_GET['search']) : '';
-    $searchQuery = "";
+// Lấy tham số 'brand' từ URL nếu có
+$brand = isset($_GET['brand']) ? $_GET['brand'] : '';
 
-    if ($search !== '') {
-        $searchQuery = "WHERE product_name LIKE '%" . $conn->real_escape_string($search) . "%'";
-    }
+// Xử lý tìm kiếm
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+$searchQuery = "";
 
-    // Xử lý tham số sắp xếp
-    $sort = isset($_GET['sort']) ? $_GET['sort'] : '';
-    $orderBy = "";
+// Kiểm tra điều kiện tìm kiếm
+if ($search !== '') {
+    $searchQuery = "WHERE product_name LIKE '%" . $conn->real_escape_string($search) . "%'";
+}
 
-    switch ($sort) {
-        case 'az':
-            $orderBy = "ORDER BY product_name ASC";
-            break;
-        case 'za':
-            $orderBy = "ORDER BY product_name DESC";
-            break;
-        case 'low':
-            $orderBy = "ORDER BY price ASC";
-            break;
-        case 'high':
-            $orderBy = "ORDER BY price DESC";
-            break;
-        default:
-            $orderBy = ""; // Không sắp xếp nếu không có tham số
-    }
-
-    // Truy vấn dữ liệu từ bảng products với tìm kiếm và sắp xếp
-    $sql = "SELECT id, product_name, price, image_path FROM products $searchQuery $orderBy";
-    $result = $conn->query($sql);
-
-    if ($result->num_rows > 0) {
-        // Hiển thị từng sản phẩm
-        while ($row = $result->fetch_assoc()) {
-            echo '<div class="item">';
-                echo '<a href="./B2/view_product.php?id=' . $row['id'] . '" 
-                    style="text-decoration: none; color: black;"
-                    class="product_items">';
-
-                // Kiểm tra nếu image_path có chứa nhiều ảnh (tách bằng dấu phẩy)
-                $imagePaths = explode(',', $row['image_path']); // Tách chuỗi ảnh
-
-                // Lấy ảnh đầu tiên
-                $firstImage = $imagePaths[0];
-
-                // Nếu image_path đã bao gồm đường dẫn, giữ nguyên. Nếu không, thêm ./uploads/
-                $imagePath = (strpos($firstImage, 'uploads/') !== false)
-                ? htmlspecialchars($firstImage) // Đường dẫn đầy đủ, giữ nguyên
-                : './uploads/' . htmlspecialchars($firstImage); // Chỉ có tên tệp, thêm 'uploads/'
-
-                // Tạo đường dẫn đầy đủ để kiểm tra file tồn tại
-                $fullPath = (strpos($firstImage, 'uploads/') !== false)
-                ? __DIR__ . '/' . htmlspecialchars($firstImage) // Đường dẫn đầy đủ
-                : __DIR__ . './uploads/' . htmlspecialchars($firstImage); // Thêm 'uploads/'
-
-                // Kiểm tra file tồn tại
-                if (file_exists($fullPath)) {
-                    echo '<img src="' . $imagePath . '" 
-                        alt="Ảnh sản phẩm" 
-                        style="max-width: 100%; height: auto;">';
-                } else {
-                    echo '<img src="./uploads/default.jpg" 
-                        alt="Ảnh mặc định" 
-                        style="max-width: 100%; height: auto;">';
-                }
-
-                echo '<div class="details">';
-                echo '<h3>' . htmlspecialchars($row['product_name']) . '</h3>';
-                echo '<p class="price">' . number_format($row['price'], 0, ".", ".") . ' VNĐ</p>';
-                echo '</div>';
-                echo '</a>';
-            echo '</div>';
-        }
+// Xử lý lọc theo hãng điện thoại
+if ($brand !== '') {
+    if ($searchQuery !== '') {
+        $searchQuery .= " AND phone_company = '" . $conn->real_escape_string($brand) . "'";
     } else {
-        echo '<p>Không có sản phẩm nào được tìm thấy.</p>';
+        $searchQuery = "WHERE phone_company = '" . $conn->real_escape_string($brand) . "'";
     }
+}
 
-    $conn->close();
-    ?>
+// Thêm điều kiện kiểm tra status_products
+if ($searchQuery !== '') {
+    $searchQuery .= " AND status_products = 1"; // Chỉ hiển thị sản phẩm có status_products = 1
+} else {
+    $searchQuery = "WHERE status_products = 1";
+}
+
+// Xử lý tham số sắp xếp
+$sort = isset($_GET['sort']) ? $_GET['sort'] : '';
+$orderBy = "";
+
+switch ($sort) {
+    case 'az':
+        $orderBy = "ORDER BY product_name ASC";
+        break;
+    case 'za':
+        $orderBy = "ORDER BY product_name DESC";
+        break;
+    case 'low':
+        $orderBy = "ORDER BY price ASC";
+        break;
+    case 'high':
+        $orderBy = "ORDER BY price DESC";
+        break;
+    default:
+        $orderBy = ""; // Không sắp xếp nếu không có tham số
+}
+
+// Truy vấn dữ liệu từ bảng products với tìm kiếm, lọc và sắp xếp
+$sql = "SELECT id, product_name, price, image_path FROM products $searchQuery $orderBy";
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+    // Hiển thị từng sản phẩm
+    while ($row = $result->fetch_assoc()) {
+        echo '<div class="item">';
+            echo '<a href="./B2/view_product.php?id=' . $row['id'] . '" 
+                style="text-decoration: none; color: black;" 
+                class="product_items">';
+
+            // Kiểm tra nếu image_path có chứa nhiều ảnh (tách bằng dấu phẩy)
+            $imagePaths = explode(',', $row['image_path']); // Tách chuỗi ảnh
+
+            // Lấy ảnh đầu tiên
+            $firstImage = $imagePaths[0];
+
+            // Nếu image_path đã bao gồm đường dẫn, giữ nguyên. Nếu không, thêm './uploads/'
+            $imagePath = (strpos($firstImage, 'uploads/') !== false)
+            ? htmlspecialchars($firstImage) // Đường dẫn đầy đủ, giữ nguyên
+            : './uploads/' . htmlspecialchars($firstImage); // Chỉ có tên tệp, thêm 'uploads/'
+
+            // Tạo đường dẫn đầy đủ để kiểm tra file tồn tại
+            $fullPath = (strpos($firstImage, 'uploads/') !== false)
+            ? __DIR__ . '/' . htmlspecialchars($firstImage) // Đường dẫn đầy đủ
+            : __DIR__ . './uploads/' . htmlspecialchars($firstImage); // Thêm 'uploads/'
+
+            // Kiểm tra file tồn tại
+            if (file_exists($fullPath)) {
+                echo '<img src="' . $imagePath . '" 
+                    alt="Ảnh sản phẩm" 
+                    style="max-width: 100%; height: auto;">';
+            } else {
+                echo '<img src="./uploads/default.jpg" 
+                    alt="Ảnh mặc định" 
+                    style="max-width: 100%; height: auto;">';
+            }
+
+            echo '<div class="details">';
+            echo '<h3>' . htmlspecialchars($row['product_name']) . '</h3>';
+            echo '<p class="price">' . number_format($row['price'], 0, ".", ".") . ' VNĐ</p>';
+            echo '</div>';
+            echo '</a>';
+        echo '</div>';
+    }
+} else {
+    echo '<p>Không có sản phẩm nào được tìm thấy.</p>';
+}
+
+$conn->close();
+
+?>
+
+
 </div>
     <div class="actions">
         <a href="./chat.php"><button type="button" class="chat"><i class="fas fa-comment-alt"></i></button></a>
