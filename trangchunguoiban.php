@@ -300,7 +300,6 @@ if(!isset($_SESSION['login_username'])){
                                             text-decoration: none;
                                             color: white;
                                             ">
-                <i class="fas fa-bars icon"></i>
                 <span>CSS cho Người Bán</span>
             </a>
         </div>

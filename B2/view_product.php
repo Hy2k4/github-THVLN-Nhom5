@@ -14,14 +14,14 @@ $conn = connect_db();
 
 // Lấy thông tin sản phẩm
 $product = null;
-if (isset($_GET['id'])) {
+$error_message = "";
+if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     $product_id = intval($_GET['id']);
 
-    // Truy vấn để lấy thông tin sản phẩm và người bán
     $stmt = $conn->prepare("
         SELECT 
             products.*, 
-            user.username, 
+            user.username AS seller_username, 
             user.sdt 
         FROM 
             products 
@@ -33,7 +33,6 @@ if (isset($_GET['id'])) {
             products.id = ?
     ");
 
-
     $stmt->bind_param("i", $product_id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -44,9 +43,28 @@ if (isset($_GET['id'])) {
         $error_message = "Sản phẩm không tồn tại.";
     }
 } else {
-    $error_message = "Không tìm thấy sản phẩm.";
+    $error_message = "ID sản phẩm không hợp lệ.";
+}
+
+// Xử lý thêm vào giỏ hàng hoặc mua ngay
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if ($product) {
+        $username = $_SESSION['login_username'];
+
+        // Nếu người dùng chọn "Thêm vào giỏ hàng"
+        if (isset($_POST['add_to_cart'])) {
+            $stmt = $conn->prepare("INSERT INTO giohang (username, product_id) VALUES (?, ?)");
+            $stmt->bind_param("si", $username, $product_id);
+            if (!$stmt->execute()) {
+                echo "<script>alert('Thêm vào giỏ hàng thất bại: {$stmt->error}');</script>";
+            } else {
+                echo "<script>alert('Sản phẩm đã được thêm vào giỏ hàng.');</script>";
+            }
+        } 
+    }
 }
 ?>
+
 
 
 <!DOCTYPE html>
@@ -68,7 +86,8 @@ if (isset($_GET['id'])) {
             background-color: #FB6F6F;
             padding: 10px;
             display: flex;
-            justify-content: space-between;
+            justify-content: space-evenly;
+
             align-items: center;
         }
 
@@ -95,10 +114,11 @@ if (isset($_GET['id'])) {
         .header .menu {
             display: flex;
             align-items: center;
+            height: auto;
+            width: auto;
         }
 
         .header .menu a {
-            margin-left: 10px;
             text-decoration: none;
             color: black;
             display: flex;
@@ -106,6 +126,10 @@ if (isset($_GET['id'])) {
         }
 
         .header .menu a .fa {
+            margin-right: 5px;
+        }
+
+        .header .menu i{
             margin-right: 5px;
         }
 
@@ -179,7 +203,7 @@ if (isset($_GET['id'])) {
             cursor: pointer;
         }
         #logo p{
-            margin: 0;
+            margin: 0 0 0 40%;
         }
         #logoN5{
             width: 200px;
@@ -223,11 +247,14 @@ if (isset($_GET['id'])) {
         }
 
         .buttons button {
-            padding: 10px 20px;
+            width: 250px;
+            height: 50px;
+            padding: 0;
             margin-right: 10px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            margin-bottom: 10px;
         }
 
         .buttons .cart-btn {
@@ -343,6 +370,12 @@ if (isset($_GET['id'])) {
             margin: 10px 0;
             
         }
+        .footer > p{
+            padding: 5px;
+        }
+        .buttons > form{
+            display: inline;
+        }
     </style>
 </head>
 <body>
@@ -355,8 +388,7 @@ if (isset($_GET['id'])) {
             <i class="fa fa-bell" style="font-size: 30px;"></i>
         </div>
         <div class="menu">
-            <a href="#"><i class="fa-solid fa-cart-shopping" style="font-size: 20px;"></i> Giỏ hàng</a>
-            <a href="./B2/thongtinuser.php"><i class="fa-solid fa-user" style="font-size: 20px;"></i> Thông tin cá nhân</a>
+            <a href="../giohang.php"><i class="fa-solid fa-cart-shopping" style="font-size: 20px;"></i> Giỏ hàng</a>
         </div>
     </div>
 
@@ -404,9 +436,11 @@ if (isset($_GET['id'])) {
                     <h2><?= htmlspecialchars($product['product_name']); ?></h2>
                     <p><strong>Giá: </strong><?= number_format($product['price'], 0, ".", ".") . " VNĐ"; ?></p>
                     <div class="buttons">
-                        <button class="cart-btn">Thêm vào giỏ hàng</button>
-                        <button class="buy-btn">Mua ngay</button>
+                        <form method="post" action="">
+                            <button class="cart-btn" name="add_to_cart">Thêm vào giỏ hàng</button>
+                        </form>
                     </div>
+
 
                     <div id="info-right">
                         <h3>Thông tin người bán:</h3>
@@ -432,8 +466,6 @@ if (isset($_GET['id'])) {
         <img src="../Image/CSS.png" alt="logoNhom5.png" id="logoN5">
         <p>Chào mừng bạn đến với hệ thống mua bán điện thoại cũ của nhóm chúng tôi</p>
         <p>Bán hàng tốt, Mua hàng ngon, Trao trọn giá trị!</p>
-        <p>Cần hỗ trợ về vấn đề khác thì hãy bấm nút phía dưới</p>
-        <button><i class="fa-solid fa-handshake"></i> Hỗ trợ ngay</button>
     </div>
 
     <script>

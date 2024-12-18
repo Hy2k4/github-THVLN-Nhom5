@@ -321,7 +321,7 @@ $ss = isset($_SESSION['login_username']) ? $_SESSION['login_username'] : null;
             <i class="fa fa-bell" style="font-size: 30px;"></i>
         </div>
         <div class="menu">
-            <a href="#"><i class="fa-solid fa-cart-shopping" style="font-size: 20px;"></i> Giỏ hàng</a>
+            <a href="./giohang.php"><i class="fa-solid fa-cart-shopping" style="font-size: 20px;"></i> Giỏ hàng</a>
             <a href="./trangchunguoiban.php"><i class="fa-solid fa-pen-to-square" style="font-size: 20px;"></i>Bán hàng</a>
         </div>
     </div>
