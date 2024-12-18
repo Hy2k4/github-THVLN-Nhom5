@@ -33,7 +33,7 @@ $ss = isset($_SESSION['login_username']) ? $_SESSION['login_username'] : null;
             display: flex;
             align-items: center;
             width: 75%;
-            justify-content: space-between;
+            justify-content: center;
         }
         .header .search-container input {
             width: 100%;
@@ -303,6 +303,37 @@ $ss = isset($_SESSION['login_username']) ? $_SESSION['login_username'] : null;
         .filters button:hover {
             background-color: #e0e0e0;
         }
+        .actions .chat:hover{
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+            opacity: 0.8;
+        }
+        .actions .chat {
+            background-color: #5bc0de;
+            color: white;
+        }
+        .actions > a{
+            text-decoration: none;
+        }
+        .actions {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .actions button {
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -318,7 +349,6 @@ $ss = isset($_SESSION['login_username']) ? $_SESSION['login_username'] : null;
                 <input type="text" name="search" id="searchbar" placeholder="Tìm kiếm sản phẩm trên hệ thống">
                 <button type="submit" id="search-btn">Tìm</button>
             </form>
-            <i class="fa fa-bell" style="font-size: 30px;"></i>
         </div>
         <div class="menu">
             <a href="./giohang.php"><i class="fa-solid fa-cart-shopping" style="font-size: 20px;"></i> Giỏ hàng</a>
@@ -460,7 +490,9 @@ $ss = isset($_SESSION['login_username']) ? $_SESSION['login_username'] : null;
     $conn->close();
     ?>
 </div>
-
+    <div class="actions">
+        <a href="./chat.php"><button type="button" class="chat"><i class="fas fa-comment-alt"></i></button></a>
+    </div>
 
     <div class="footer">
         <img src="./Image/CSS.png" alt="logoNhom5.png" id="logoN5">

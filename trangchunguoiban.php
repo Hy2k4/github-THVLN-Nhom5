@@ -311,7 +311,6 @@ if(!isset($_SESSION['login_username'])){
         </div>
         <div class="icons">
             <i class="fas fa-history icon" onclick="redirectToTBLS()"></i>
-            <i class="fas fa-bell icon"></i>
             <i class="fas fa-sync-alt icon" onclick="redirectToTest()"></i>
         </div>
     </div>
@@ -425,7 +424,7 @@ if(!isset($_SESSION['login_username'])){
                 <a href="./B2/baidangmoi.php"><button type="button" class="add"><i class="fa-solid fa-plus"></i></button></a>
                 <button type="submit" class="delete"><i class="fas fa-trash"></i></button>
                 <button type="button" class="edit"><i class="fas fa-edit"></i></button>
-                <button type="button" class="chat"><i class="fas fa-comment-alt"></i></button>
+                <a href="./chat.php"><button type="button" class="chat"><i class="fas fa-comment-alt"></i></button></a>
             </div>
         </form>
 

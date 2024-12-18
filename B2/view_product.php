@@ -385,7 +385,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="search-container">
             <i class="fa fa-bars" id="sidebar" style="font-size: 30px; cursor: pointer;"></i>
             <input type="text" id="searchbar" placeholder="Tìm kiếm sản phẩm trên hệ thống">
-            <i class="fa fa-bell" style="font-size: 30px;"></i>
         </div>
         <div class="menu">
             <a href="../giohang.php"><i class="fa-solid fa-cart-shopping" style="font-size: 20px;"></i> Giỏ hàng</a>

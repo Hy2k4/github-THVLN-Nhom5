@@ -19,23 +19,22 @@
 CREATE DATABASE IF NOT EXISTS `thlvnn5` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `thlvnn5`;
 
--- Dumping structure for table thlvnn5.chitietgiohang
-CREATE TABLE IF NOT EXISTS `chitietgiohang` (
-  `ChiTietGioHangID` int NOT NULL AUTO_INCREMENT,
-  `GioHangID` int DEFAULT NULL,
-  `ProductID` int NOT NULL,
-  `SoLuong` int NOT NULL,
-  `ThanhTien` decimal(10,2) NOT NULL,
-  `username` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  PRIMARY KEY (`ChiTietGioHangID`),
-  KEY `ProductID` (`ProductID`),
-  CONSTRAINT `chitietgiohang_ibfk_1` FOREIGN KEY (`ProductID`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `chitietgiohang_chk_1` CHECK ((`SoLuong` > 0))
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+-- Dumping structure for table thlvnn5.chitietdathang
+CREATE TABLE IF NOT EXISTS `chitietdathang` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `product_id` int NOT NULL,
+  `quantity` int NOT NULL DEFAULT '1',
+  `total_price` decimal(10,2) NOT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `username` (`username`),
+  KEY `product_id` (`product_id`),
+  CONSTRAINT `chitietdathang_ibfk_1` FOREIGN KEY (`username`) REFERENCES `user` (`username`) ON DELETE CASCADE,
+  CONSTRAINT `chitietdathang_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table thlvnn5.chitietgiohang: ~0 rows (approximately)
-INSERT INTO `chitietgiohang` (`ChiTietGioHangID`, `GioHangID`, `ProductID`, `SoLuong`, `ThanhTien`, `username`) VALUES
-	(2, NULL, 38, 1, 4990000.00, 'test');
+-- Dumping data for table thlvnn5.chitietdathang: ~0 rows (approximately)
 
 -- Dumping structure for table thlvnn5.giohang
 CREATE TABLE IF NOT EXISTS `giohang` (
@@ -44,12 +43,15 @@ CREATE TABLE IF NOT EXISTS `giohang` (
   `TrangThai` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT 'Chưa thanh toán',
   `username` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `product_id` int DEFAULT NULL,
+  `quantity` int DEFAULT '1',
   PRIMARY KEY (`GioHangID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table thlvnn5.giohang: ~1 rows (approximately)
-INSERT INTO `giohang` (`GioHangID`, `NgayTao`, `TrangThai`, `username`, `product_id`) VALUES
-	(1, '2024-12-18 09:43:47', 'Chưa thanh toán', 'test', 38);
+-- Dumping data for table thlvnn5.giohang: ~3 rows (approximately)
+INSERT INTO `giohang` (`GioHangID`, `NgayTao`, `TrangThai`, `username`, `product_id`, `quantity`) VALUES
+	(2, '2024-12-18 10:27:21', 'Chưa thanh toán', 'test', 38, 1),
+	(4, '2024-12-18 11:19:18', 'Chưa thanh toán', 'test', 25, 1),
+	(52, '2024-12-19 01:01:32', 'Chưa thanh toán', 'test', 5, 1);
 
 -- Dumping structure for table thlvnn5.history
 CREATE TABLE IF NOT EXISTS `history` (
@@ -61,7 +63,7 @@ CREATE TABLE IF NOT EXISTS `history` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table thlvnn5.history: ~0 rows (approximately)
+-- Dumping data for table thlvnn5.history: ~2 rows (approximately)
 INSERT INTO `history` (`id`, `username`, `action`, `details`, `created_at`) VALUES
 	(30, 'test', 'xóa bài đăng', 'thành công', '2024-12-18 01:09:05'),
 	(31, 'test', 'chỉnh sửa bài đăng', 'thành công', '2024-12-18 01:10:47'),
@@ -110,23 +112,6 @@ INSERT INTO `user` (`ID`, `username`, `password`, `fullname`, `birthday`, `email
 	(2, 'test', 'Hy_201004', 'Nguyễn Khang Hy', '2004-10-20', 'khanghynguyen15@gmail.com', 792456036, '07 Vũ Bảo, Ngô Mây, TP.Quy Nhơn'),
 	(3, 'hy', '1234', 'Nghy', '2000-10-20', 'nguyenhy2k4@gmail.com', 867901082, '09 vu bao'),
 	(4, 'hoangngu', 'hoang_12345', 'Hồ Lê Hoàng', '2024-12-01', 'holehoang1903@gmail.com', 708731564, '01 NTH');
-
--- Dumping structure for trigger thlvnn5.trg_calculate_ThanhTien
-SET @OLDTMP_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
-DELIMITER //
-CREATE TRIGGER `trg_calculate_ThanhTien` BEFORE INSERT ON `chitietgiohang` FOR EACH ROW BEGIN
-  DECLARE productPrice DECIMAL(10,2);
-  
-  -- Lấy giá sản phẩm từ bảng products
-  SELECT `price` INTO productPrice 
-  FROM `products` 
-  WHERE `id` = NEW.`ProductID`;
-
-  -- Tính thành tiền
-  SET NEW.`ThanhTien` = NEW.`SoLuong` * productPrice;
-END//
-DELIMITER ;
-SET SQL_MODE=@OLDTMP_SQL_MODE;
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

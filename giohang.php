@@ -5,7 +5,7 @@ $conn = connect_db();
 
 if (!isset($_SESSION['login_username'])) {
     $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
-    header("Location: ../B1/login.php");
+    header("Location: ./test.php");
     exit;
 }
 
@@ -217,13 +217,18 @@ if (empty($cart_items)) {
                     // Kiểm tra file có tồn tại không
                     if (file_exists($fullPath)) {
                         echo '<div class="product">
-                                <input type="checkbox" class="product-checkbox" data-price="' . $item['price'] . '" data-quantity="' . $item['quantity'] . '" checked>
-                                <img src="' . $imagePath . '" alt="Ảnh sản phẩm" style="max-width: 100%; height: auto;">
-                                <div class="details">
-                                    <h4>' . $item['product_name'] . '</h4>
-                                </div>
-                                <div class="price">' . number_format($item['price'], 0, ',', '.') . 'đ</div>
-                            </div>';
+                        <input type="checkbox" class="product-checkbox" 
+                               data-product-id="' . $item['product_id'] . '" 
+                               data-price="' . $item['price'] . '" 
+                               data-quantity="' . $item['quantity'] . '" 
+                               >
+                            <img src="' . $imagePath . '" alt="Ảnh sản phẩm" style="max-width: 100%; height: auto;">
+                            <div class="details">
+                                <h4>' . $item['product_name'] . '</h4>
+                            </div>
+                            <div class="price">' . number_format($item['price'], 0, ',', '.') . 'đ</div>
+                        </div>';
+                    
                     } else {
                         echo '<div class="product">
                                 <input type="checkbox" class="product-checkbox" data-price="' . $item['price'] . '" data-quantity="' . $item['quantity'] . '" checked>
@@ -240,55 +245,82 @@ if (empty($cart_items)) {
         </div>
 
         <div class="footer">
-            <div class="select-all">
-                <input type="checkbox" id="select-all">
-                <label for="select-all">Tất cả</label>
-            </div>
-            <div class="total">Tổng: 0đ</div>
-            <button class="buy-now">Mua Ngay</button>
-        </div>
+    <div class="select-all">
+        <input type="checkbox" id="select-all">
+        <label for="select-all">Tất cả</label>
     </div>
+    <div class="total">Tổng: 0đ</div>
+    <!-- Form để gửi sản phẩm đã chọn -->
+    <form id="order-form" action="./thongtindathang.php" method="POST">
+        <input type="hidden" name="cart_data" id="cart-data"> <!-- Input ẩn để gửi dữ liệu -->
+        <button type="submit" class="buy-now">Đặt hàng</button>
+    </form>
+</div>
 
-    <script>
-        // Hàm cập nhật tổng khi có sự thay đổi
-        function updateTotal() {
-            var checkboxes = document.querySelectorAll('.product-checkbox');
-            var total = 0;
+<script>
+    // Hàm cập nhật tổng khi có sự thay đổi
+    function updateTotal() {
+        var checkboxes = document.querySelectorAll('.product-checkbox');
+        var total = 0;
 
-            // Duyệt qua tất cả các checkbox và tính tổng giá trị
-            for (var checkbox of checkboxes) {
-                if (checkbox.checked) {
-                    var price = parseInt(checkbox.getAttribute('data-price'));
-                    var quantity = parseInt(checkbox.getAttribute('data-quantity'));
-                    total += price * quantity; // Cộng giá trị của sản phẩm được chọn
-                }
+        // Duyệt qua tất cả các checkbox và tính tổng giá trị
+        for (var checkbox of checkboxes) {
+            if (checkbox.checked) {
+                var price = parseInt(checkbox.getAttribute('data-price'));
+                var quantity = parseInt(checkbox.getAttribute('data-quantity'));
+                total += price * quantity; // Cộng giá trị của sản phẩm được chọn
             }
-
-            // Hiển thị tổng tiền
-            document.querySelector('.total').innerText = 'Tổng: ' + total.toLocaleString('vi-VN') + 'đ';
         }
 
-        // Lựa chọn tất cả checkbox
-        document.getElementById('select-all').onclick = function () {
-            var checkboxes = document.querySelectorAll('.product-checkbox');
-            var isChecked = this.checked;
-            
-            for (var checkbox of checkboxes) {
-                checkbox.checked = isChecked; // Đặt trạng thái checkbox dựa trên lựa chọn "select-all"
-            }
+        // Hiển thị tổng tiền
+        document.querySelector('.total').innerText = 'Tổng: ' + total.toLocaleString('vi-VN') + 'đ';
+    }
 
-            updateTotal(); // Cập nhật tổng sau khi thay đổi
-        };
-
-        // Cập nhật tổng cho các checkbox khi được chọn hoặc bỏ chọn
-        var productCheckboxes = document.querySelectorAll('.product-checkbox');
-        for (var checkbox of productCheckboxes) {
-            checkbox.onclick = updateTotal; // Gọi hàm khi checkbox bị thay đổi
+    // Lựa chọn tất cả checkbox
+    document.getElementById('select-all').onclick = function () {
+        var checkboxes = document.querySelectorAll('.product-checkbox');
+        var isChecked = this.checked;
+        
+        for (var checkbox of checkboxes) {
+            checkbox.checked = isChecked; // Đặt trạng thái checkbox dựa trên lựa chọn "select-all"
         }
 
-        // Gọi hàm cập nhật tổng khi tải trang
-        window.onload = updateTotal;
-    </script>
+        updateTotal(); // Cập nhật tổng sau khi thay đổi
+    };
+
+    // Cập nhật tổng cho các checkbox khi được chọn hoặc bỏ chọn
+    var productCheckboxes = document.querySelectorAll('.product-checkbox');
+    for (var checkbox of productCheckboxes) {
+        checkbox.onclick = updateTotal; // Gọi hàm khi checkbox bị thay đổi
+    }
+
+    document.getElementById('order-form').onsubmit = function (e) {
+    var selectedItems = [];
+    var checkboxes = document.querySelectorAll('.product-checkbox');
+    checkboxes.forEach(function (checkbox) {
+        if (checkbox.checked) {
+            var productData = {
+                product_id: checkbox.getAttribute('data-product-id'),
+                quantity: checkbox.getAttribute('data-quantity'),
+                price: checkbox.getAttribute('data-price')
+            };
+            selectedItems.push(productData);
+        }
+    });
+
+    // Debug: In ra console dữ liệu gửi đi
+    console.log("Selected Items:", selectedItems);
+
+    if (selectedItems.length === 0) {
+        alert("Vui lòng chọn ít nhất một sản phẩm để đặt hàng!");
+        e.preventDefault();
+        return false;
+    }
+
+    document.getElementById('cart-data').value = JSON.stringify(selectedItems);
+};
+</script>
+
 
 </body>
 </html>

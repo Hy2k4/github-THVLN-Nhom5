@@ -25,6 +25,7 @@ if (!isset($_SESSION['login_username'])) {
         .content { display: flex; flex-direction: column; align-items: center; margin: 20px; }
         .mess-box { width: 80%; max-width: 800px; background-color: white; padding: 20px; border-radius: 5px; }
         .message { background-color:rgb(255, 255, 255); color: white; padding: 10px; margin-bottom: 10px; border-radius: 5px; color: black; border: 1px solid black;}
+        .logo {font-size: 30px; font-weight: bold;}
     </style>
 </head>
 <body>
