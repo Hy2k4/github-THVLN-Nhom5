@@ -33,22 +33,9 @@ CREATE TABLE IF NOT EXISTS `chitietdathang` (
   KEY `product_id` (`product_id`),
   CONSTRAINT `chitietdathang_ibfk_1` FOREIGN KEY (`username`) REFERENCES `user` (`username`) ON DELETE CASCADE,
   CONSTRAINT `chitietdathang_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=69 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table thlvnn5.chitietdathang: ~3 rows (approximately)
-INSERT INTO `chitietdathang` (`id`, `username`, `cart_id`, `product_id`, `quantity`, `total_price`, `created_at`) VALUES
-	(56, 'test', 0, 38, 1, 4990000.00, '2024-12-19 01:51:25'),
-	(57, 'test', 0, 38, 1, 4990000.00, '2024-12-19 01:51:44'),
-	(58, 'test', 0, 38, 1, 4990000.00, '2024-12-19 01:52:11'),
-	(59, 'test', 0, 38, 1, 4990000.00, '2024-12-19 01:52:51'),
-	(60, 'test', 0, 38, 1, 4990000.00, '2024-12-19 02:01:40'),
-	(61, 'test', 0, 38, 1, 4990000.00, '2024-12-19 02:01:55'),
-	(62, 'test', 0, 38, 1, 4990000.00, '2024-12-19 02:02:06'),
-	(63, 'test', 0, 38, 1, 4990000.00, '2024-12-19 02:12:37'),
-	(64, 'test', 0, 38, 1, 4990000.00, '2024-12-19 02:13:13'),
-	(65, 'test', 0, 38, 1, 4990000.00, '2024-12-19 02:28:49'),
-	(67, 'test', 71, 38, 1, 4990000.00, '2024-12-19 02:38:59'),
-	(68, 'test', 72, 38, 1, 4990000.00, '2024-12-19 02:41:17');
+-- Dumping data for table thlvnn5.chitietdathang: ~0 rows (approximately)
 
 -- Dumping structure for table thlvnn5.giohang
 CREATE TABLE IF NOT EXISTS `giohang` (
@@ -59,9 +46,9 @@ CREATE TABLE IF NOT EXISTS `giohang` (
   `product_id` int DEFAULT NULL,
   `quantity` int DEFAULT '1',
   PRIMARY KEY (`GioHangID`)
-) ENGINE=InnoDB AUTO_INCREMENT=73 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=76 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table thlvnn5.giohang: ~8 rows (approximately)
+-- Dumping data for table thlvnn5.giohang: ~11 rows (approximately)
 INSERT INTO `giohang` (`GioHangID`, `NgayTao`, `TrangThai`, `username`, `product_id`, `quantity`) VALUES
 	(2, '2024-12-18 10:27:21', 'Chưa thanh toán', 'test', 38, 1),
 	(4, '2024-12-18 11:19:18', 'Chưa thanh toán', 'test', 25, 1),
@@ -70,7 +57,10 @@ INSERT INTO `giohang` (`GioHangID`, `NgayTao`, `TrangThai`, `username`, `product
 	(61, '2024-12-19 02:13:13', 'Chưa thanh toán', 'test', NULL, 1),
 	(67, '2024-12-19 02:28:49', 'Chưa thanh toán', 'test', NULL, 1),
 	(71, '2024-12-19 02:38:59', 'Chưa thanh toán', 'test', NULL, 1),
-	(72, '2024-12-19 02:41:17', 'Chưa thanh toán', 'test', NULL, 1);
+	(72, '2024-12-19 02:41:17', 'Chưa thanh toán', 'test', NULL, 1),
+	(73, '2024-12-19 08:15:06', 'Chưa thanh toán', 'admin', 38, 1),
+	(74, '2024-12-19 08:15:17', 'Chưa thanh toán', 'admin', NULL, 1),
+	(75, '2024-12-19 08:22:38', 'Chưa thanh toán', 'test', 25, 1);
 
 -- Dumping structure for table thlvnn5.history
 CREATE TABLE IF NOT EXISTS `history` (
@@ -80,13 +70,29 @@ CREATE TABLE IF NOT EXISTS `history` (
   `details` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table thlvnn5.history: ~2 rows (approximately)
+-- Dumping data for table thlvnn5.history: ~19 rows (approximately)
 INSERT INTO `history` (`id`, `username`, `action`, `details`, `created_at`) VALUES
 	(30, 'test', 'xóa bài đăng', 'thành công', '2024-12-18 01:09:05'),
 	(31, 'test', 'chỉnh sửa bài đăng', 'thành công', '2024-12-18 01:10:47'),
-	(32, 'test', 'tạo bài đăng', 'thành công', '2024-12-18 01:11:05');
+	(32, 'test', 'tạo bài đăng', 'thành công', '2024-12-18 01:11:05'),
+	(33, 'admin', 'chỉnh sửa bài đăng', 'thành công', '2024-12-19 08:17:05'),
+	(34, 'admin', 'xóa bài đăng', 'thành công', '2024-12-19 08:17:34'),
+	(35, 'admin', 'tạo bài đăng', 'thành công', '2024-12-19 08:17:46'),
+	(36, 'admin', 'xóa bài đăng', 'thành công', '2024-12-19 08:18:12'),
+	(37, 'admin', 'xóa bài đăng', 'thành công', '2024-12-19 08:18:16'),
+	(38, 'test', 'tạo bài đăng', 'thành công', '2024-12-19 08:45:28'),
+	(39, 'test', 'tạo bài đăng', 'thành công', '2024-12-19 12:02:35'),
+	(40, 'test', 'tạo bài đăng', 'thành công', '2024-12-19 12:08:18'),
+	(41, 'test', 'tạo bài đăng', 'thành công', '2024-12-19 12:11:11'),
+	(42, 'test', 'tạo bài đăng', 'thành công', '2024-12-19 12:14:17'),
+	(43, 'test', 'tạo bài đăng', 'thành công', '2024-12-19 12:18:21'),
+	(44, 'test', 'tạo bài đăng', 'thành công', '2024-12-19 12:21:39'),
+	(45, 'test', 'tạo bài đăng', 'thành công', '2024-12-19 12:31:37'),
+	(46, 'test', 'tạo bài đăng', 'thành công', '2024-12-19 12:34:22'),
+	(47, 'test', 'tạo bài đăng', 'thành công', '2024-12-19 12:34:28'),
+	(48, 'test', 'tạo bài đăng', 'thành công', '2024-12-19 12:36:11');
 
 -- Dumping structure for table thlvnn5.messages
 CREATE TABLE IF NOT EXISTS `messages` (
@@ -95,13 +101,11 @@ CREATE TABLE IF NOT EXISTS `messages` (
   `message` text COLLATE utf8mb4_unicode_ci,
   `timestamp` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table thlvnn5.messages: ~0 rows (approximately)
+-- Dumping data for table thlvnn5.messages: ~1 rows (approximately)
 INSERT INTO `messages` (`id`, `username`, `message`, `timestamp`) VALUES
-	(1, 'User', 'hello', '2024-12-18 19:56:45'),
-	(2, 'User', 'hello', '2024-12-18 20:08:54'),
-	(3, 'test', 'hello', '2024-12-18 20:11:51');
+	(1, 'User', 'hello', '2024-12-18 19:56:45');
 
 -- Dumping structure for table thlvnn5.products
 CREATE TABLE IF NOT EXISTS `products` (
@@ -119,13 +123,20 @@ CREATE TABLE IF NOT EXISTS `products` (
   `status_products` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `fk_user_id` (`user_username`)
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table thlvnn5.products: ~3 rows (approximately)
+-- Dumping data for table thlvnn5.products: ~10 rows (approximately)
 INSERT INTO `products` (`id`, `product_name`, `headline`, `price`, `description`, `phone_type`, `phone_company`, `image_path`, `created_at`, `updated_at`, `user_username`, `status_products`) VALUES
-	(5, 'samsung S20', 'bán SS S20 like new', 4990000.00, 'ib để xem chi tiết', 'SamSung S', 'Samsung', 'uploads/S20.jpg', '2024-12-08 14:32:23', '2024-12-12 13:39:05', 'test', '1'),
 	(25, 'iphone 12', 'bán ip 12', 7000000.00, '', '', 'apple', 'uploads/ip12.jpg,uploads/ip12p2.jpg,uploads/ip12p3.jpg', '2024-12-17 15:30:37', '2024-12-17 18:10:54', 'test', '1'),
-	(38, 'test 15', 'test', 4990000.00, '', '', 'test', 'uploads/HoLeHoang.jpg', '2024-12-17 18:11:11', '2024-12-17 18:11:11', 'test', '1');
+	(40, 'Iphone 13', 'test', 9700000.00, 'bán lại điện thoại iphone 13 like new 99%', '', 'Apple', 'uploads/ip13.jpg,uploads/ip13p2.jpg', '2024-12-19 05:06:33', '2024-12-19 05:06:33', 'test', '1'),
+	(41, 'samsung A55', 'bán lại điện thoại Samsung hàng 98%', 9900000.00, '', 'SamSung A', 'Samsung', 'uploads/ssa55.jpg,uploads/ssa55p2.jpg', '2024-12-19 05:09:41', '2024-12-19 05:09:41', 'test', '1'),
+	(42, 'Oppo reno 12 pro ', 'Dùng lâu chán bán lại điện thoại ', 10000000.00, 'bán hoặc đổi sang xiaomi mi 13', 'oppo reno', 'Oppo', 'uploads/opporeno12pro.jpg,uploads/opporeno12prop2.jpg', '2024-12-19 05:13:20', '2024-12-19 05:13:20', 'test', '1'),
+	(43, 'Xiaomi mi 11', 'cần bán xiaomi hàng 97%', 6900000.00, '', 'xiaomi mi', 'Xiaomi', 'uploads/OIP.jpg', '2024-12-19 05:15:24', '2024-12-19 05:15:24', 'test', '1'),
+	(44, 'Vivo IQ Z9 Turbo', 'bán lại điện thoại ', 6400000.00, '', 'Vivo IQ', 'Vivo', 'uploads/VivoIQZ9Turbo.jpg,uploads/VivoIQZ9Turbop2.jpg', '2024-12-19 05:19:30', '2024-12-19 05:19:30', 'test', '1'),
+	(45, 'Realme GT neo 5', 'bán lại điện để nâng đời', 4990000.00, '', 'Realme GT neo', 'Realme', 'uploads/GTneo5.jpg,uploads/GTneo5p2.jpg,uploads/GTneo5p3.jpg', '2024-12-19 05:22:50', '2024-12-19 05:22:50', 'test', '1'),
+	(46, 'Infinix hot 40 pro', 'bán lại điện thoại do không thich hệ điều hành ', 4990000.00, 'ib để trao đổi chi tiết về sản phẩm\r\n\r\nMàn hình\r\n\r\nKích thước màn hình\r\n\r\n6.78 inches\r\nCông nghệ màn hình\r\n\r\nIPS LCD\r\nĐộ phân giải màn hình\r\n\r\n1080x2460 pixels\r\nTính năng màn hình\r\n\r\nTần số quét 120Hz, 500 nits, Gamut phổ màu 85% NTSC\r\nCamera sau\r\n\r\nCamera sau\r\n\r\nCamera góc rộng: 108 MP, f/1.8, 0.64µm, AF\r\nCamera macro: 2 MP, f/2.4\r\nCamera phụ: 0.08 MP\r\nQuay video\r\n\r\n1440p@30fps\r\nTính năng camera\r\n\r\nĐèn flash LED bốn lớp, HDR, toàn cảnh\r\nCamera trước\r\n\r\nCamera trước\r\n\r\nCamera góc rộng: 32 MP, f/2.2\r\nQuay video trước\r\n\r\n1080p@30fps\r\nVi xử lý & đồ họa\r\n\r\nChipset\r\n\r\nMediatek Helio G99 (6nm)\r\nGPU\r\n\r\nMali-G57 MC2\r\nGiao tiếp & kết nối\r\n\r\nCông nghệ NFC\r\n\r\nCó\r\nThẻ SIM\r\n\r\n2 SIM (Nano-SIM)\r\nJack tai nghe 3.5\r\n\r\nCó\r\nHỗ trợ mạng\r\n\r\n4G\r\nGPS\r\n\r\nGPS, A-GPS\r\nRAM & lưu trữ\r\n\r\nDung lượng RAM\r\n\r\n8 GB\r\nBộ nhớ trong\r\n\r\n256 GB\r\nKhe cắm thẻ nhớ\r\n\r\nmicro SD\r\nPin & công nghệ sạc\r\n\r\nPin\r\n\r\n5000 mAh\r\nCông nghệ sạc\r\n\r\nSạc nhanh 33W, 5V/6.6A\r\nCổng sạc\r\n\r\nUSB Type-C\r\nTính năng khác\r\n\r\nHệ điều hành\r\n\r\nAndroid 13\r\nBộ xử lý & Đồ họa\r\n\r\nLoại CPU\r\n\r\nOcta-core CPU, Lên đến 2.2GHz\r\nKích thước & Trọng lượng\r\n\r\nKích thước\r\n\r\n168.6 x 76.6 x 8.25 mm\r\nTrọng lượng\r\n\r\n199g\r\nTiện ích khác\r\n\r\nCảm biến vân tay\r\n\r\nCảm biến vân tay cạnh bên\r\nCác loại cảm biến\r\n\r\nCảm biến tiệm cận, Cảm biến ánh sáng, La bàn, Con quay hồi chuyển, Cảm biến áp kế, Cảm biến trọng lực\r\nCổng kết nối\r\n\r\nWi-Fi\r\n\r\n802.11 a/b/g/n/ac\r\nThông số khác\r\n\r\nCông nghệ âm thanh\r\n\r\nLoa âm thanh nổi\r\nThông tin chung\r\n\r\nThời điểm ra mắt\r\n\r\n12/2023', 'Infinix hot', 'Infinix', 'uploads/infinixhot40pro.jpg,uploads/infinixhot40prop2.jpg,uploads/infinixhot40prop3.jpg', '2024-12-19 05:34:19', '2024-12-19 05:34:19', 'test', '1'),
+	(47, 'Techno pova 6', 'bán hoặc đổi sang iphone ', 5990000.00, 'fan iphone', 'Techno pova', 'Techno', 'uploads/technopova6.jpg,uploads/technopova6p2.jpg', '2024-12-19 05:36:08', '2024-12-19 05:36:08', 'test', '1'),
+	(48, 'Nubia neo 2', 'nâng đời nên đổi máy ', 3999999.00, 'giữ gìn kĩ nên không lo', 'Nubia neo', 'Nubia', 'uploads/nubia.jpg', '2024-12-19 05:37:42', '2024-12-19 05:37:42', 'test', '1');
 
 -- Dumping structure for table thlvnn5.user
 CREATE TABLE IF NOT EXISTS `user` (

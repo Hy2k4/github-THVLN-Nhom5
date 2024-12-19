@@ -146,10 +146,10 @@ include('../backend/srcdoimk.php'); // Import file xử lý logic
 
     <div id="wrapper">
         <form method="post">
-            <h3>Đổi Mật Khẩu</h3>
+            <h3>Change Password</h3>
             <div class="form-group">
                 <input type="text" name="username" value="<?= htmlspecialchars($username) ?>" readonly>
-                <label for="username">Tài khoản</label>
+                <label for="username">Username</label>
             </div>
             <div class="form-group">
                 <input type="text" name="email" value="<?= htmlspecialchars($email) ?>" readonly>
@@ -157,15 +157,15 @@ include('../backend/srcdoimk.php'); // Import file xử lý logic
             </div>
             <div class="form-group">
                 <input type="password" name="password_new" placeholder=" " required>
-                <label for="password_new">Mật khẩu mới</label>
+                <label for="password_new">New Password</label>
             </div>
             <div class="form-group">
                 <input type="password" name="password_new_confirm" placeholder=" " required>
-                <label for="password_new_confirm">Xác nhận mật khẩu</label>
+                <label for="password_new_confirm">Verify Password</label>
             </div>
-            <button type="submit" name="btn_confirm">Xác nhận</button>
+            <button type="submit" name="btn_confirm">Submit</button>
             </br>
-            <button id="btn-back" name="btn-back"><a href="./login.php">Quay lại trang đăng nhập</a></button>
+            <button id="btn-back" name="btn-back"><a href="./login.php">Go back to login</a></button>
         </form>
         <?php if (!empty($message)): ?>
             <div class="message"><?= $message ?></div>

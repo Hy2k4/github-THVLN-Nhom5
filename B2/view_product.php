@@ -40,10 +40,10 @@ if (isset($_GET['id']) && is_numeric($_GET['id'])) {
     if ($result->num_rows > 0) {
         $product = $result->fetch_assoc();
     } else {
-        $error_message = "Sản phẩm không tồn tại.";
+        $error_message = "The product does not exist.";
     }
 } else {
-    $error_message = "ID sản phẩm không hợp lệ.";
+    $error_message = "Invalid product ID.";
 }
 
 // Xử lý thêm vào giỏ hàng hoặc mua ngay
@@ -56,9 +56,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $conn->prepare("INSERT INTO giohang (username, product_id) VALUES (?, ?)");
             $stmt->bind_param("si", $username, $product_id);
             if (!$stmt->execute()) {
-                echo "<script>alert('Thêm vào giỏ hàng thất bại: {$stmt->error}');</script>";
+                echo "<script>alert('Add to cart fails: {$stmt->error}');</script>";
             } else {
-                echo "<script>alert('Sản phẩm đã được thêm vào giỏ hàng.');</script>";
+                echo "<script>alert('Products have been added to cart.');</script>";
             }
         } 
     }
@@ -203,7 +203,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             cursor: pointer;
         }
         #logo p{
-            margin: 0 0 0 40%;
+            margin: 0;
         }
         #logoN5{
             width: 200px;
@@ -376,35 +376,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .buttons > form{
             display: inline;
         }
+        #btn-back{
+            width: 100px;
+            height: 30px;
+            border: 1px solid black;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            background-color: #FB6F6F;
+            padding: 0;
+        }
+        #btn-back:hover{
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+            opacity: 0.8;
+        }
+
     </style>
 </head>
 <body>
     <!-- Header -->
     <div class="header">
         <a href="../test.php" id="logo"><p>CSS</p></a>
-        <div class="search-container">
-            <i class="fa fa-bars" id="sidebar" style="font-size: 30px; cursor: pointer;"></i>
-            <input type="text" id="searchbar" placeholder="Tìm kiếm sản phẩm trên hệ thống">
-        </div>
+        <button onclick="window.history.back()" id="btn-back">Turn back</button>
         <div class="menu">
-            <a href="../giohang.php"><i class="fa-solid fa-cart-shopping" style="font-size: 20px;"></i> Giỏ hàng</a>
+            <a href="../giohang.php"><i class="fa-solid fa-cart-shopping" style="font-size: 20px;"></i>shopping cart</a>
         </div>
-    </div>
-
-    <!-- Menu Sidebar -->
-    <div id="menu-sidebar">
-        <div id="profile">
-            <?php if (isset($_SESSION['login_username'])): ?>
-                <p style="text-align: center;">Người dùng:</p>
-                <a href="./null.php" style="border-left: 3px solid black; border-right: 3px solid black; text-decoration: none; color: black; display: flex; justify-content: center;">
-                    <?= htmlspecialchars($_SESSION['login_username']); ?>
-                </a>
-            <?php endif; ?>
-        </div>
-        <!-- Các nút menu -->
-        <button class="menu-item"><a href="#">Switch to Seller</a></button>
-        <!-- Thêm các mục khác -->
-        <button class="button-menu" id="button-logout"><a href="./del_sessionp2.php">Logout</a></button>
     </div>
 
     <div id="container">
@@ -419,9 +415,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             foreach ($imagePaths as $path):
                                 $imagePath = '../' . trim(htmlspecialchars($path));
                                 if (file_exists($imagePath)) { 
-                                    echo "<img src='{$imagePath}' alt='Ảnh sản phẩm'>";
+                                    echo "<img src='{$imagePath}' alt='Image product'>";
                                 } else {
-                                    echo "<p>Không tìm thấy ảnh: {$imagePath}</p>";
+                                    echo "<p>No photos found: {$imagePath}</p>";
                                 }
                             endforeach;
                             ?>
@@ -436,15 +432,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <p><strong>Giá: </strong><?= number_format($product['price'], 0, ".", ".") . " VNĐ"; ?></p>
                     <div class="buttons">
                         <form method="post" action="">
-                            <button class="cart-btn" name="add_to_cart">Thêm vào giỏ hàng</button>
+                            <button class="cart-btn" name="add_to_cart">Add to shopping cart</button>
                         </form>
                     </div>
 
 
                     <div id="info-right">
-                        <h3>Thông tin người bán:</h3>
-                        <p><strong>Tên người bán:</strong> <?= htmlspecialchars($product['user_username']); ?></p>
-                        <p><strong>Số điện thoại:</strong> (+84) <?= htmlspecialchars($product['sdt']); ?></p>
+                        <h3>Seller Information:</h3>
+                        <p><strong>Name Seller:</strong> <?= htmlspecialchars($product['user_username']); ?></p>
+                        <p><strong>Phone Number</strong> (+84) <?= htmlspecialchars($product['sdt']); ?></p>
                     </div>
                 </div>
 
@@ -452,7 +448,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
 
             <div class="description">
-                <h3>Mô tả sản phẩm:</h3>
+                <h3>Detail Information:</h3>
                 <p><?= nl2br(htmlspecialchars($product['description'])); ?></p>
             </div>
         <?php else: ?>
@@ -463,8 +459,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div class="footer">
         <img src="../Image/CSS.png" alt="logoNhom5.png" id="logoN5">
-        <p>Chào mừng bạn đến với hệ thống mua bán điện thoại cũ của nhóm chúng tôi</p>
-        <p>Bán hàng tốt, Mua hàng ngon, Trao trọn giá trị!</p>
+        <p>Welcome to our project cellphone seller system</p>
+        <p>Good sales, Good purchases, Full value!</p>
     </div>
 
     <script>

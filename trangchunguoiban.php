@@ -300,13 +300,13 @@ if(!isset($_SESSION['login_username'])){
                                             text-decoration: none;
                                             color: white;
                                             ">
-                <span>CSS cho Người Bán</span>
+                <span>CSS for Seller</span>
             </a>
         </div>
         <div class="search-bar" style="max-width: 1000px;">
             <form method="GET" action="">
-                <input type="text" name="search" placeholder="Tìm kiếm...">
-                <button type="submit" id="search-btn">Tìm</button>
+                <input type="text" name="search" placeholder="Search here...">
+                <button type="submit" id="search-btn">Find</button>
             </form>
         </div>
         <div class="icons">
@@ -369,8 +369,11 @@ if(!isset($_SESSION['login_username'])){
                     $deleteSql = "DELETE FROM products WHERE id IN ($idList)";
                     if ($conn->query($deleteSql) === TRUE) {
                         //echo 'Đã xóa các sản phẩm được chọn thành công.';
+                        echo '<script>
+                                alert("Please select at least one product to order!");
+                            </script>';
                     } else {
-                        echo 'Lỗi khi xóa sản phẩm: ' . $conn->error;
+                        echo 'Errors when deleting products: ' . $conn->error;
                     }
                 }
 
@@ -408,12 +411,12 @@ if(!isset($_SESSION['login_username'])){
                         echo '<div class="details">';
                         echo '<h3>' . htmlspecialchars($row['product_name']) . '</h3>';
                         echo '<p class="price">' . number_format($row['price'], 0, ".", ".") . ' VNĐ</p>';
-                        echo '<a href="./B2/view_product.php?id=' . $row['id'] . '">Xem chi tiết</a>';
+                        echo '<a href="./B2/view_product.php?id=' . $row['id'] . '">View details</a>';
                         echo '</div>';
                         echo '</div>';
                     }
                 } else {
-                    echo '<p>Không có sản phẩm nào được tìm thấy.</p>';
+                    echo '<p>No products were found.</p>';
                 }
 
                 $conn->close();
@@ -452,9 +455,9 @@ if(!isset($_SESSION['login_username'])){
         document.querySelector('.edit').addEventListener('click', function () {
             const checkboxes = document.querySelectorAll('.product-checkbox:checked'); // Lấy checkbox được chọn
             if (checkboxes.length === 0) {
-                alert("Vui lòng chọn một bài đăng để chỉnh sửa.");
+                alert("Please select a post to edit.");
             } else if (checkboxes.length > 1) {
-                alert("Chỉ có thể chỉnh sửa một bài đăng tại một thời điểm.");
+                alert("Only one post can be edited at a time.");
             } else {
                 const selectedId = checkboxes[0].value; // Lấy ID của bài đăng
                 window.location.href = `./edit_post.php?id=${selectedId}`; // Chuyển hướng tới trang chỉnh sửa
@@ -465,9 +468,9 @@ if(!isset($_SESSION['login_username'])){
             const checkboxes = document.querySelectorAll('.product-checkbox:checked');
             
             if (checkboxes.length === 0) {
-                alert("Vui lòng chọn một bài đăng để chỉnh sửa.");
+                alert("Please select a post to edit.");
             } else if (checkboxes.length > 1) {
-                alert("Chỉ có thể chỉnh sửa một bài đăng tại một thời điểm.");
+                alert("Only one post can be edited at a time.");
             } else {
                 const selectedId = checkboxes[0].value;
 
@@ -475,8 +478,8 @@ if(!isset($_SESSION['login_username'])){
                 fetch('./B3/history.php', { // URL của file history.php
                     method: 'POST',
                     body: new URLSearchParams({
-                        action: 'chỉnh sửa bài đăng',
-                        detail: 'thành công'
+                        action: 'Edit a post',
+                        detail: 'successful'
                     })
                 })
                 .then(response => response.text())
@@ -497,8 +500,8 @@ if(!isset($_SESSION['login_username'])){
             fetch(' ./B3/history.php', {
                 method: 'POST',
                 body: new URLSearchParams({
-                    action: 'tạo bài đăng',
-                    detail: 'thành công'
+                    action: 'Create a post',
+                    detail: 'successful'
                 })
             })
             .then(response => response.text())
@@ -514,7 +517,7 @@ if(!isset($_SESSION['login_username'])){
             const checkboxes = document.querySelectorAll('.product-checkbox:checked');
             
             if (checkboxes.length === 0) {
-                alert("Vui lòng chọn một bài đăng để xóa.");
+                alert("Please select a post to delete.");
             } else {
                 const selectedIds = [];
                 checkboxes.forEach(checkbox => selectedIds.push(checkbox.value));
@@ -523,8 +526,8 @@ if(!isset($_SESSION['login_username'])){
                 fetch('./B3/history.php', {
                     method: 'POST',
                     body: new URLSearchParams({
-                        action: 'xóa bài đăng',
-                        detail: 'thành công'
+                        action: 'Delete a post',
+                        detail: 'successful'
                     })
                 })
                 .then(response => response.text())
@@ -532,7 +535,7 @@ if(!isset($_SESSION['login_username'])){
                     console.log(data); // Ghi lại kết quả lịch sử
                 })
                 .catch(error => {
-                    console.error("Lỗi ghi lại lịch sử:", error);
+                    console.error("Error recording history:", error);
                 });
 
                 // Tiến hành xóa sản phẩm

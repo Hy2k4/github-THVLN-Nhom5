@@ -24,7 +24,9 @@ if ($action && $detail) {
     $stmt->bind_param("ssss", $username, $action, $detail, $created_at);
 
     if ($stmt->execute()) {
-        echo "History logged successfully.";
+        echo "<script>
+                alert('History logged successfully.');
+            </script>";
     } else {
         echo "Error logging history: " . $conn->error;
     }
@@ -32,6 +34,8 @@ if ($action && $detail) {
     $stmt->close();
     $conn->close();
 } else {
-    echo "Missing action or detail.";
+    echo "<script>
+            alert('Missing action or detail.');
+        </script>";
 }
 ?>

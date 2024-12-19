@@ -19,7 +19,7 @@ if (isset($_POST['btn_dangnhap'])) {
 
     // Kiểm tra kết nối
     if ($conn->connect_error) {
-        die("Kết nối thất bại: " . $conn->connect_error);
+        die("fail connect: " . $conn->connect_error);
     }
 
     // Kiểm tra tài khoản admin
@@ -44,7 +44,7 @@ if (isset($_POST['btn_dangnhap'])) {
         $stmt = $conn->prepare($sql);
 
         if ($stmt === false) {
-            die("Lỗi chuẩn bị truy vấn: " . $conn->error);
+            die("error when querying: " . $conn->error);
         }
 
         // Ràng buộc tham số cho truy vấn
@@ -59,7 +59,10 @@ if (isset($_POST['btn_dangnhap'])) {
             // Kiểm tra trạng thái tài khoản
             if ($user['status'] == 0) {
                 // Tài khoản bị khóa, không cho phép đăng nhập
-                echo "<script>alert('Tài khoản đã bị cấm'); window.location.href = 'login.php';</script>";
+                echo "<script>
+                        alert('your account has been ban');
+                        window.location.href = 'login.php';
+                    </script>";
                 exit();
             }
 
@@ -74,11 +77,16 @@ if (isset($_POST['btn_dangnhap'])) {
                 unset($_SESSION['redirect_after_login']);
                 header("Location: $redirect_url");
             } else {
-                header("Location: ../test.php");
+                echo '<script>
+                        alert("Login success!");
+                        window.location.href = "../test.php";
+                    </script>';
             }
             exit();
         } else {
-            echo "<script>alert('Tên đăng nhập/email hoặc mật khẩu sai hoặc tài khoản không tồn tại');</script>";
+            echo "<script>
+                    alert('username/email or password is not correct, plz try again');
+                </script>";
         }
     }
 
@@ -230,7 +238,7 @@ if (isset($_POST['btn_dangnhap'])) {
 </head>
 <body>
     <div class="header">
-        <button id="btnback"><i class="fa-solid fa-left-long" style="margin-right: 3px;"></i><a href="../test.php" style="text-decoration: none; color: black;">Quay lại</a></button>
+        <button id="btnback"><i class="fa-solid fa-left-long" style="margin-right: 3px;"></i><a href="../test.php" style="text-decoration: none; color: black;">Turn back</a></button>
         <p id="logo">CSS - Cellphone Seller System</p>
     </div>
 
@@ -239,19 +247,19 @@ if (isset($_POST['btn_dangnhap'])) {
             <h3 style="margin-top: 0; margin-bottom: 10px;">Login</h3>
             <div class="form-group">
                 <input value="<?= isset($usernameoremail)? $usernameoremail:"" ?>" type="text" name="username_or_email" required>
-                <label for="">Tài Khoản hoặc Email</label>
+                <label for="">Username or Email</label>
             </div>
 
             <div class="form-group">
                 <input type="password" name="password" required>
-                <label for="">Mật Khẩu</label>
+                <label for="">Password</label>
             </div>
 
             <input type="submit" value="Login" name="btn_dangnhap" id="btn_login">
 
             <ul class="login-links">
-                <li><a href="./dangky.php" class="btn btn-link">Đăng ký</a></li>
-                <li><a href="./Verify.php" class="btn btn-link">Quên mật khẩu</a></li></br>
+                <li><a href="./dangky.php" class="btn btn-link">Register</a></li>
+                <li><a href="./Verify.php" class="btn btn-link">Forget password</a></li></br>
             </ul>
         </form>
     </div>

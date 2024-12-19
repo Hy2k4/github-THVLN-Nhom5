@@ -27,9 +27,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bind_param("ssdssssi", $product_name, $headline, $price, $description, $phone_type, $phone_company, $image_path, $id);
 
     if ($stmt->execute()) {
-        echo "Cập nhật thành công!";
+        echo "Update success!";
     } else {
-        echo "Lỗi: " . $stmt->error;
+        echo "Error: " . $stmt->error;
     }
 }
 ?>

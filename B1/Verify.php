@@ -7,7 +7,7 @@ include '../connect/connect.php';
 $mysqli = connect_db();
 
 if ($mysqli->connect_error) {
-    die("Kết nối thất bại: " . $mysqli->connect_error);
+    die("connect fail: " . $mysqli->connect_error);
 }
 
 $message = "";
@@ -34,14 +34,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             $response = sendOTP($email, $otp);
 
             if ($response === true) {
-                $message = "<p id='messgreen'>Đã gửi mã OTP tới email:</br> $email </p
+                $message = "<p id='messgreen'>sent OTP code to:</br> $email </p
                 >";
             } else {
                 error_log("PHPMailer Error: " . $response);
-                $message = "<p id='messred'>Gửi OTP thất bại, vui lòng thử lại.</p>";
+                $message = "<p id='messred'>Send OTP fail, pls try again</p>";
             }
         } else {
-            $message = "<p id='messred'>Email không tồn tại.</p>";
+            $message = "<p id='messred'>Email does not exist.</p>";
         }
 
         $stmt->close();
@@ -56,7 +56,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             header("location: doimk.php");
             exit();
         } else {
-            $message = "<p id='messred'>Mã OTP không chính xác.</p>";
+            $message = "<p id='messred'>OTP is wrong.</p>";
         }
     }
 
@@ -283,13 +283,13 @@ $mysqli->close();
             </div>
 
             <div class="form-group">
-                <input type="text" name="otp" id="ip_txOTP" placeholder="Nhập OTP">
+                <input type="text" name="otp" id="ip_txOTP" placeholder="Enter OTP">
                 <button type="submit" name="send_otp" id="btn_send">Send OTP</button>
             </div>
 
             <input type="submit" name="verify_otp" class="ip" value="Verify Email" id="btn">
             </br>
-            <button name="bt_return" id="bt_return"><a href="./login.php">Đăng nhập bằng tài khoản khác</a></button>
+            <button name="bt_return" id="bt_return"><a href="./login.php">Login by another account</a></button>
 
             <?php if (!empty($message)): ?>
                 <div id="message-container">

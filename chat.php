@@ -4,7 +4,7 @@ ob_start(); // Hạn chế lỗi chuyển trang
 
 if (!isset($_SESSION['login_username'])) {
     $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
-    header("Location: ../B1/login.php");
+    header("Location: ./B1/login.php");
     exit;
 }
 ?>
@@ -14,7 +14,7 @@ if (!isset($_SESSION['login_username'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat với người dùng</title>
+    <title>Chat with user</title>
     <style>
        #chat-box {
             width: 300px;
@@ -72,14 +72,14 @@ if (!isset($_SESSION['login_username'])) {
     <div class="header">
         <div class="logo">CSS for Seller</div>
         <div class="icons">
-            <button onclick="window.history.back()"><i class="fas fa-arrow-left"></i> Quay lại</button>
+            <button onclick="window.history.back()"><i class="fas fa-arrow-left"></i> turn back</button>
         </div>
     </div>
     <div id="midder">
         <div id="box-mess">   
             <div id="chat-box"></div>
-            <input type="text" id="message-input" placeholder="Nhập tin nhắn...">
-            <button id="send-button">Gửi</button>
+            <input type="text" id="message-input" placeholder="Enter messages here...">
+            <button id="send-button">Send</button>
         </div>
     </div> 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

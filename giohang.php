@@ -28,7 +28,7 @@ while ($row = $result->fetch_assoc()) {
 }
 
 if (empty($cart_items)) {
-    echo "<p>Giỏ hàng của bạn đang trống.</p>";
+    echo "<p>Your shopping cart is empty.</p>";
 }
 ?>
 
@@ -37,7 +37,7 @@ if (empty($cart_items)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giỏ Hàng</title>
+    <title>Shopping cart</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         /* Các styles không thay đổi */
@@ -184,7 +184,7 @@ if (empty($cart_items)) {
     <div class="header">
         <div class="logo">CSS - Cellphone Seller System</div>
         <div class="icons">
-            <button><a href="./test.php"><i class="fas fa-arrow-left"></i>Quay lại</a></button>
+            <button><a href="./test.php"><i class="fas fa-arrow-left"></i>Turn back</a></button>
         </div>
     </div>
 
@@ -192,7 +192,7 @@ if (empty($cart_items)) {
         <div class="container">
             <?php
             if (empty($cart_items)) {
-                echo "<p>Giỏ hàng của bạn đang trống.</p>";
+                echo "<p>Your shopping cart is empty.</p>";
             } else {
                 foreach ($cart_items as $item) {
                     // Đảm bảo image_path là một chuỗi trước khi xử lý
@@ -222,7 +222,7 @@ if (empty($cart_items)) {
                                data-price="' . $item['price'] . '" 
                                data-quantity="' . $item['quantity'] . '" 
                                >
-                            <img src="' . $imagePath . '" alt="Ảnh sản phẩm" style="max-width: 100%; height: auto;">
+                            <img src="' . $imagePath . '" alt="Image post" style="max-width: 100%; height: auto;">
                             <div class="details">
                                 <h4>' . $item['product_name'] . '</h4>
                             </div>
@@ -247,13 +247,13 @@ if (empty($cart_items)) {
         <div class="footer">
     <div class="select-all">
         <input type="checkbox" id="select-all">
-        <label for="select-all">Tất cả</label>
+        <label for="select-all">All</label>
     </div>
-    <div class="total">Tổng: 0đ</div>
+    <div class="total">Total: 0đ</div>
     <!-- Form để gửi sản phẩm đã chọn -->
     <form id="order-form" action="./thongtindathang.php" method="POST">
         <input type="hidden" name="cart_data" id="cart-data"> <!-- Input ẩn để gửi dữ liệu -->
-        <button type="submit" class="buy-now">Đặt hàng</button>
+        <button type="submit" class="buy-now">Place an order</button>
     </form>
 </div>
 
@@ -273,7 +273,7 @@ if (empty($cart_items)) {
         }
 
         // Hiển thị tổng tiền
-        document.querySelector('.total').innerText = 'Tổng: ' + total.toLocaleString('vi-VN') + 'đ';
+        document.querySelector('.total').innerText = 'Total: ' + total.toLocaleString('vi-VN') + 'đ';
     }
 
     // Lựa chọn tất cả checkbox
@@ -312,7 +312,7 @@ if (empty($cart_items)) {
     console.log("Selected Items:", selectedItems);
 
     if (selectedItems.length === 0) {
-        alert("Vui lòng chọn ít nhất một sản phẩm để đặt hàng!");
+        alert("Please select at least one product to order!");
         e.preventDefault();
         return false;
     }

@@ -30,16 +30,16 @@ function sendOTP($email, $otp) {
 
         // Nội dung email
         $mail->isHTML(true); // Sử dụng định dạng HTML
-        $mail->Subject = "Mã OTP xác minh tài khoản"; // Chủ đề email
-        $mail->Body = "Mã OTP của bạn là: <b>{$otp}</b>"; // Nội dung chính
-        $mail->AltBody = "Mã OTP của bạn là: {$otp}"; // Nội dung thay thế (dành cho email không hỗ trợ HTML)
+        $mail->Subject = "Verify OTP"; // Chủ đề email
+        $mail->Body = "Your OTP is: <b>{$otp}</b>"; // Nội dung chính
+        $mail->AltBody = "Your OTP is: {$otp}"; // Nội dung thay thế (dành cho email không hỗ trợ HTML)
         //$mail->SMTPDebug = SMTP::DEBUG_SERVER;
         // Gửi email
         $mail->send();
         return true; // Gửi thành công
     } catch (Exception $e) {
         // Trả về lỗi nếu có
-        return "Lỗi khi gửi email: " . $mail->ErrorInfo;
+        return "Error: " . $mail->ErrorInfo;
     }
 }
 ?>

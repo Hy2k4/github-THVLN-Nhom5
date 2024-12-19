@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Kiểm tra nếu không có user_username (người dùng chưa đăng nhập)
     if ($user_username === null) {
-        echo "Lỗi: Bạn cần đăng nhập để đăng sản phẩm!";
+        echo "Error: You need to sign in to post your product!";
         exit();
     }
 
@@ -69,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header("Location: ../trangchunguoiban.php"); // Quay lại trang chính
         exit();
     } else {
-        echo "Lỗi: " . $stmt->error;
+        echo "Error: " . $stmt->error;
     }
 
     // Đóng kết nối

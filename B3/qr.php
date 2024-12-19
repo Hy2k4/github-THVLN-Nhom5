@@ -61,7 +61,7 @@
     <div class="header">
         <div class="logo">CSS</div>
         <div class="icons">
-            <a href="../test.php"><i class="fas fa-home"></i> Quay lại</a>
+            <a href="../test.php"><i class="fas fa-home"></i> turn back</a>
         </div>
     </div>
     <div class="container">
@@ -71,7 +71,7 @@
                 $cart_data = $_POST['cart_data'];
 
                 // Làm gì đó với phương thức thanh toán và giỏ hàng
-                echo "<h2>Phương thức thanh toán:" . "</br>" . htmlspecialchars($payment_method) . "</h2>";
+                echo "<h2>Payment Methods:" . "</br>" . htmlspecialchars($payment_method) . "</h2>";
                 // Xử lý giỏ hàng và tạo mã QR (nếu cần)
                 echo "<input type='image' src='../Image/hehe.png' alt='ảnh qr' style='height: 500px; weight: 500px;'>";
             }

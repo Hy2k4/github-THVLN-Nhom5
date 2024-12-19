@@ -35,12 +35,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['save-btn'])) {
     $update_stmt->bind_param("sssssss", $fullname, $birthday, $email, $sdt, $address, $password, $user_id); // username cũng là string
 
     if ($update_stmt->execute()) {
-        //echo "<script>alert('Cập nhật thông tin thành công!');</script>";
+        echo "<script>
+                alert('Update information successfully!');
+            </script>";
         // Tải lại trang để hiển thị thông tin mới
         header("Location: " . $_SERVER['PHP_SELF']);
         exit(); // Dừng thực thi mã sau khi chuyển hướng
     } else {
-        echo "<script>alert('Có lỗi xảy ra, vui lòng thử lại.');</script>";
+        echo "<script>
+                alert('Có lỗi xảy ra, vui lòng thử lại.');
+            </script>";
     }
 }
 

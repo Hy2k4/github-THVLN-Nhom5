@@ -15,55 +15,55 @@ if (isset($_POST['btn_submit'])) {
 
     // Kiểm tra mật khẩu nhập lại
     if ($password !== $confirm_password) {
-        $message = "<p style='color:red;'>Mật khẩu và mật khẩu nhập lại không khớp.</p>";
+        $message = "<p style='color:red;'>password and verify password is not matching.</p>";
     } else {
         $conn = connect_db();
 
         if ($conn->connect_error) {
-            die("Kết nối thất bại: " . $conn->connect_error);
+            die("fail connect: " . $conn->connect_error);
         }
 
         // Kiểm tra các trường nhập liệu
         if (empty($username)) {
-            $loi .= "Vui lòng nhập tên đăng nhập<br>";
+            $loi .= "plz enter username<br>";
         } elseif (strlen($username) < 1) {
-            $loi .= "Tên đăng nhập phải trên 1 kí tự<br>";
+            $loi .= "username must more than 1 character<br>";
         }
 
         if (empty($password)) {
-            $loi .= "Vui lòng nhập mật khẩu<br>";
+            $loi .= "plz enter password<br>";
         } elseif (strlen($password) < 8) {
-            $loi .= "Mật khẩu phải trên 7 kí tự<br>";
+            $loi .= "password must more than than 7 character<br>";
         }
 
         if (empty($confirm_password)) {
-            $loi .= "Vui lòng nhập mật khẩu xác minh<br>";
+            $loi .= "plz enter verify password<br>";
         } elseif (strlen($confirm_password) < 8) {
-            $loi .= "Mật khẩu xác minh phải trên 7 kí tự<br>";
+            $loi .= "verify password must more than than 7 character<br>";
         }
 
         if (empty($fullname)) {
-            $loi .= "Vui lòng nhập tên Họ Tên<br>";
+            $loi .= "plz enter fullname<br>";
         }
 
         if(empty($date)){
-            $loi .= "Vui lòng nhập ngày sinh<br>";
+            $loi .= "plz enter date of birth<br>";
         }
 
         if (empty($email)) {
-            $loi .= "Vui lòng nhập email<br>";
+            $loi .= "plz enter email<br>";
         } elseif (strlen($email) < 12) {
-            $loi .= "Email phải trên 12 kí tự<br>";
+            $loi .= "Email must more than 12 character<br>";
         }
 
         if(empty($sdt)){
-            $loi .= "Vui lòng nhập số điện thoại<br>";
+            $loi .= "plz enter phone number<br>";
         } elseif (strlen($sdt) < 9) {
-            $loi .= "Vui lòng nhập số điện thoại trên 10 kí tự<br>";
+            $loi .= "phone number must more than 9 number<br>";
         }
 
         if (empty($address)) {
-            $loi .= "Vui lòng nhập địa chỉ<br>";
+            $loi .= "plz enter address<br>";
         }
 
         // Kiểm tra username đã tồn tại
@@ -75,7 +75,7 @@ if (isset($_POST['btn_submit'])) {
             $check_stmt->store_result();
 
             if ($check_stmt->num_rows > 0) {
-                $loi .= "Tên đăng nhập đã có người dùng </br> Vui lòng chọn tên khác<br>";
+                $loi .= "Usernames that already have users</br> PLz enter another usernames<br>";
             }
 
             $check_stmt->close();
@@ -88,15 +88,15 @@ if (isset($_POST['btn_submit'])) {
                 $stmt->bind_param("sssssss", $username, $password, $fullname, $date, $email, $sdt, $address);
 
                 if ($stmt->execute()) {
-                    echo "<script>alert('Đăng ký thành công! Vui lòng chờ 3 giây để chuyển hướng.');</script>";
+                    echo "<script>alert('Registration Successful! Please wait 3 seconds to redirect.');</script>";
                     echo "<script>setTimeout(function() { window.location.href = './login.php?message=success'; }, 2500);</script>";
                     exit();
                 } else {
-                    $message = '<p>Lỗi: ' . $stmt->error . '</p>';
+                    $message = '<p>Error: ' . $stmt->error . '</p>';
                 }
                 $stmt->close();
             } else {
-                echo "Lỗi: " . $conn->error;
+                echo "Error: " . $conn->error;
             }
         } else {
             $message = '<p style="color:red;">' . $loi . '</p>';
@@ -108,7 +108,7 @@ if (isset($_POST['btn_submit'])) {
 
 // Kiểm tra xem có thông báo từ query string không
 if (isset($_GET['message']) && $_GET['message'] == 'success') {
-    $message = '<p style="color:green;">Đăng ký thành công!</p>';
+    $message = '<p style="color:green;">Registration Successful!</p>';
 }
 ?>
 
@@ -239,27 +239,27 @@ if (isset($_GET['message']) && $_GET['message'] == 'success') {
             <h3 style="margin-top: 0;">Resign account</h3>
             <div class="form-group">
                 <input value="<?= isset($username)? $username:"" ?>" type="text" name="username" required>
-                <label for="">Tài Khoản</label>
+                <label for="">Username</label>
             </div>
 
             <div class="form-group">
                 <input type="password" name="password" required>
-                <label for="">Mật Khẩu</label>
+                <label for="">Password</label>
             </div>
 
             <div class="form-group">
                 <input type="password" name="confirm_password" required>
-                <label for="">Xác nhận mật Khẩu</label>
+                <label for="">Verify password</label>
             </div>
 
             <div class="form-group">
                 <input value="<?= isset($fullname)? $fullname:"" ?>" type="text" name="fullname" required>
-                <label for="">Họ Tên</label>
+                <label for="">Fullname</label>
             </div>
 
             <div class="form-group">
                 <input type="date" name="date" required>
-                <label for="">Ngày sinh</label>
+                <label for="">Date of birth</label>
             </div>
 
             <div class="form-group">
@@ -269,28 +269,24 @@ if (isset($_GET['message']) && $_GET['message'] == 'success') {
 
             <div class="form-group">
                 <input type="text" name="number" required>
-                <label for="">Số điện thoại</label>
+                <label for="">Phone number</label>
             </div>
 
             <div class="form-group">
                 <input type="text" name="address" required>
-                <label for="">Địa chỉ</label>
+                <label for="">Address</label>
             </div>
 
-            <input type="submit" name="btn_submit" value="Đăng ký" id="btn_submit" class="btn_submit">
+            <input type="submit" name="btn_submit" value="Register" id="btn_submit" class="btn_submit">
             </br>
 
-            <button id="btn-back"><a href="./login.php">Quay lại</a></button>
+            <button id="btn-back"><a href="./login.php">Go back</a></button>
 
             <div id="thong-bao">
                 <?php echo $message; ?>
             </div>
         </form>
     </div>
-
-
-
-
 
     <script>
     </script>

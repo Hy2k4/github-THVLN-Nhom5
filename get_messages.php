@@ -28,7 +28,7 @@ if ($result->num_rows > 0) {
         }
     }
 } else {
-    echo "Chưa có tin nhắn nào.";
+    echo "No messages yet.";
 }
 
 $conn->close();

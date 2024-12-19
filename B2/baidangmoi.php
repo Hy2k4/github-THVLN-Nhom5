@@ -167,48 +167,48 @@ $fullname = $_SESSION['login_fullname'];
     <div class="header">
         <div class="logo">CSS - New post from seller</div>
         <div class="icons">
-            <button><a href="../trangchunguoiban.php"><i class="fas fa-arrow-left"></i>Quay lại</a></button>
+            <button><a href="../trangchunguoiban.php"><i class="fas fa-arrow-left"></i>turn back</a></button>
         </div>
     </div>
 
     <form action="../backend/process_product.php" method="POST" enctype="multipart/form-data">
         <div class="container">
             <div class="form-group">
-                <label for="product-name">Tên sản phẩm:</label>
+                <label for="product-name">product name:</label>
                 <input type="text" id="product-name" name="product-name">
             </div>
             <div class="form-group">
-                <label for="headline">Tiêu đề:</label>
+                <label for="headline">Headline:</label>
                 <input type="text" id="headline" name="headline">
             </div>
             <div class="form-group">
-                <label for="price">Giá:</label>
+                <label for="price">Price:</label>
                 <input type="text" id="price" name="price">
             </div>
             <div class="form-group">
-                <label for="description">Mô tả:</label>
+                <label for="description">Detail:</label>
                 <textarea id="description" name="description" rows="4"></textarea>
             </div>
             <div class="form-group">
-                <label for="phone-type">Loại điện thoại:</label>
+                <label for="phone-type">Type of phone:</label>
                 <input type="text" id="phone-type" name="phone-type">
             </div>
             <div class="form-group">
-                <label for="phone-companies">Hãng điện thoại:</label>
+                <label for="phone-companies">Phone company:</label>
                 <input type="text" id="phone-companies" name="phone-companies">
             </div>
             <div class="form-group">
-                <label for="phone-photos">Hình ảnh điện thoại:</label>
+                <label for="phone-photos">Image phone:</label>
                 <div class="upload-btn">
                     <label for="phone-photos-upload">
-                        <i class="fas fa-upload"></i> Tải lên hình ảnh
+                        <i class="fas fa-upload"></i> upload image
                     </label>
                     <input type="file" id="phone-photos-upload" name="phone-photos[]" multiple>
                 </div>
                 <div id="phone-photos-preview"></div> <!-- Hiển thị ảnh đã chọn -->
             </div>
 
-            <button class="post-btn">Đăng</button>
+            <button class="post-btn">Post</button>
         </div>
     </form>
 

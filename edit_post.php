@@ -14,7 +14,7 @@
 
     // Lấy ID bài đăng từ URL
     if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
-        echo "ID không hợp lệ.";
+        echo "Invalid ID.";
         exit();
     }
 
@@ -30,7 +30,7 @@
     $post = $result->fetch_assoc();
 
     if (!$post) {
-        echo "Bài đăng không tồn tại.";
+        echo "Invalid post.";
         exit();
     }
 
@@ -44,7 +44,7 @@
         $price = $_POST['price'];
         $description = $_POST['description'];
         $phone_type = $_POST['phone-type'];
-        $phone_company = $_POST['phone-company'] ?? 'Chưa xác định';
+        $phone_company = $_POST['phone-company'] ?? 'Invalid';
 
         // Xóa ảnh cũ nếu người dùng tải ảnh mới
         $new_image_paths = [];
@@ -65,7 +65,7 @@
                     if (move_uploaded_file($tmp_name, $upload_dir . $image_name)) {
                         $new_image_paths[] = $image_path;
                     } else {
-                        $error_message = "Không thể tải lên hình ảnh mới.";
+                        $error_message = "Can't upload image.";
                         break;
                     }
                 }
@@ -81,13 +81,16 @@
         if ($stmt) {
             $stmt->bind_param("ssdssssi", $product_name, $headline, $price, $description, $phone_type, $phone_company, $new_image_paths_str, $post_id);
             if ($stmt->execute()) {
-                echo "<script>alert('Cập nhật thành công!'); window.location.href='./trangchunguoiban.php';</script>";
+                echo "<script>
+                        alert('Update successfully!');
+                        window.location.href='./trangchunguoiban.php';
+                    </script>";
                 exit();
             } else {
-                $error_message = "Lỗi khi cập nhật dữ liệu: " . $conn->error;
+                $error_message = "Error updating data: " . $conn->error;
             }
         } else {
-            $error_message = "Không thể chuẩn bị câu lệnh SQL: " . $conn->error;
+            $error_message = "Unable to prepare SQL statements: " . $conn->error;
         }
     }
 ?>
@@ -95,7 +98,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Chỉnh sửa bài đăng</title>
+    <title>Edit post</title>
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; padding: 0; }
         h2 { text-align: center; color: #333; margin-top: 20px; }
@@ -112,39 +115,39 @@
     </style>
 </head>
 <body>
-    <h2>Chỉnh sửa bài đăng</h2>
+    <h2>Edit post</h2>
     <?php if ($error_message): ?>
         <p style="color: red; text-align: center;"><?php echo $error_message; ?></p>
     <?php endif; ?>
     <form action="" method="POST" enctype="multipart/form-data">
-        <label for="product-name">Tên sản phẩm:</label>
+        <label for="product-name">Name product:</label>
         <input type="text" id="product-name" name="product-name" value="<?php echo htmlspecialchars($post['product_name']); ?>" required>
 
-        <label for="headline">Tiêu đề:</label>
+        <label for="headline">Headline:</label>
         <input type="text" id="headline" name="headline" value="<?php echo htmlspecialchars($post['headline']); ?>" required>
 
-        <label for="price">Giá:</label>
+        <label for="price">Price:</label>
         <input type="number" id="price" name="price" value="<?php echo htmlspecialchars($post['price']); ?>" required>
 
-        <label for="description">Mô tả:</label>
+        <label for="description">Detail:</label>
         <textarea id="description" name="description"><?php echo htmlspecialchars($post['description']); ?></textarea>
 
-        <label for="phone-type">Loại điện thoại:</label>
+        <label for="phone-type">Type of phone:</label>
         <input type="text" id="phone-type" name="phone-type" value="<?php echo htmlspecialchars($post['phone_type']); ?>">
 
-        <label for="phone-company">Hãng điện thoại:</label>
+        <label for="phone-company">Phone company:</label>
         <input type="text" id="phone-company" name="phone-company" value="<?php echo htmlspecialchars($post['phone_company']); ?>">
 
-        <label for="product-images">Hình ảnh sản phẩm:</label>
+        <label for="product-images">Image product:</label>
         <div>
             <?php foreach ($imagePaths as $imagePath): ?>
-                <img src="<?php echo htmlspecialchars($imagePath); ?>" class="thumbnail" alt="Hình ảnh">
+                <img src="<?php echo htmlspecialchars($imagePath); ?>" class="thumbnail" alt="Image">
             <?php endforeach; ?>
         </div>
         <input type="file" id="product-images" name="product-images[]" multiple>
 
-        <button type="submit">Lưu</button>
-        <a href="./trangchunguoiban.php">Hủy</a>
+        <button type="submit">Save</button>
+        <a href="./trangchunguoiban.php">Cancel</a>
     </form>
 </body>
 </html>

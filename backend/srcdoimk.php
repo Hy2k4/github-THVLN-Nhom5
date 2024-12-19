@@ -7,7 +7,7 @@ $message = "";
 
 // Kiểm tra nếu session không tồn tại, chuyển hướng về trang đăng nhập
 if (!isset($_SESSION['otp_email'])) {
-    header("location: login.php");
+    header("location: ../B1/login.php");
     exit();
 }
 
@@ -17,7 +17,7 @@ $email = $_SESSION['otp_email']; // Lấy email từ session
 $mysqli = connect_db();
 
 if ($mysqli->connect_error) {
-    die("Kết nối thất bại: " . $mysqli->connect_error);
+    die("error connect: " . $mysqli->connect_error);
 }
 
 // Lấy thông tin tài khoản (username) từ database dựa trên email
@@ -30,7 +30,7 @@ if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
     $username = $row['username'];
 } else {
-    $message = "<p id='messred'>Không tìm thấy thông tin tài khoản với email này.</p>";
+    $message = "<p id='messred'>Can't find information about username and email.</p>";
     $username = ""; // Giá trị mặc định nếu không tìm thấy
 }
 
@@ -42,7 +42,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['btn_confirm'])) {
     $password_new_confirm = $_POST['password_new_confirm'];
 
     if ($password_new !== $password_new_confirm) {
-        $message = "<p id='messred'>Mật khẩu mới và xác nhận mật khẩu không khớp.</p>";
+        $message = "<p id='messred'>New Password and new password verify is not match, plz try again.</p>";
     } else {
         // Cập nhật mật khẩu trong database (không băm)
         $stmt = $mysqli->prepare("UPDATE user SET password = ? WHERE email = ?");
@@ -50,14 +50,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['btn_confirm'])) {
 
         if ($stmt->execute()) {
             echo "<script>
-                    alert('Đổi mật khẩu thành công!');
+                    alert('Change password success!');
                     window.location.href = './login.php';
                 </script>";
             unset($_SESSION['otp_email']);
             unset($_SESSION['otp']);
             exit();
         } else {
-            $message = "<p id='messred'>Lỗi khi đổi mật khẩu: " . $stmt->error . "</p>";
+            $message = "<p id='messred'>Error about change password: " . $stmt->error . "</p>";
         }
 
         $stmt->close();

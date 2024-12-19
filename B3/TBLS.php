@@ -37,8 +37,7 @@ if (!isset($_SESSION['login_username'])) {
     </div>
 
     <div class="content">
-        <h2>Lịch sử hoạt động</h2>
-
+        <h2>History activity</h2>
 
         <div class="mess-box">
         <?php
@@ -61,14 +60,14 @@ if (!isset($_SESSION['login_username'])) {
                 // Duyệt qua các dòng dữ liệu và hiển thị
                 while($row = $result->fetch_assoc()) {
                     echo '<div class="message">';
-                    echo '<strong>Tên người dùng: </strong>' . htmlspecialchars($row['username']) . '<br>';
-                    echo '<strong>Hành động: </strong>' . htmlspecialchars($row['action']) . '<br>';
-                    echo '<strong>Chi tiết: </strong>' . htmlspecialchars($row['details']) . '<br>';
-                    echo '<strong>Thời gian: </strong>' . htmlspecialchars($row['created_at']) . '<br>';
+                    echo '<strong>Name username: </strong>' . htmlspecialchars($row['username']) . '<br>';
+                    echo '<strong>Action: </strong>' . htmlspecialchars($row['action']) . '<br>';
+                    echo '<strong>Detail: </strong>' . htmlspecialchars($row['details']) . '<br>';
+                    echo '<strong>Time: </strong>' . htmlspecialchars($row['created_at']) . '<br>';
                     echo '</div>';
                 }
             } else {
-                echo 'Không có lịch sử hoạt động.';
+                echo 'No activity history.';
             }
 
             // Đóng kết nối

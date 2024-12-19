@@ -3,8 +3,47 @@ include '../connect/connect.php';
 session_start();
 ob_start();
 
+// Kiểm tra đăng nhập
 if (!isset($_SESSION['login_username'])) {
-    header('Location: ../B1/login.php'); // Chuyển hướng về trang login nếu chưa đăng nhập
+    header('Location: ../B1/login.php');
+    exit();
+}
+
+$conn = connect_db();
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Xử lý khóa/mở khóa tài khoản hoặc sản phẩm
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['user_id'])) {
+        // Khóa/mở khóa tài khoản
+        $user_id = $_POST['user_id'];
+        $current_status = $_POST['current_status'];
+        $new_status = $current_status ? 0 : 1;
+
+        $sql = "UPDATE user SET status = ? WHERE ID = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ii", $new_status, $user_id);
+        $stmt->execute();
+        $stmt->close();
+    }
+
+    if (isset($_POST['product_id'])) {
+        // Khóa/mở khóa sản phẩm
+        $product_id = $_POST['product_id'];
+        $current_status = $_POST['current_status'];
+        $new_status = $current_status ? 0 : 1;
+
+        $sql = "UPDATE products SET status_products = ? WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("ii", $new_status, $product_id);
+        $stmt->execute();
+        $stmt->close();
+    }
+
+    // Chuyển hướng để tránh gửi lại form khi tải lại trang
+    header("Location: khoataikhoan.php");
     exit();
 }
 ?>
@@ -17,6 +56,7 @@ if (!isset($_SESSION['login_username'])) {
     <title>CSS - Quản lý tài khoản</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        /* Thêm CSS để giao diện đẹp hơn */
         body {
             font-family: Arial, sans-serif;
             background-color: #f5f5f5;
@@ -24,51 +64,20 @@ if (!isset($_SESSION['login_username'])) {
             padding: 0;
         }
         .header {
-            background-color:  #ff6f6f;
+            background-color: #ff6f6f;
             padding: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             color: white;
         }
-        .header .logo {
-            font-size: 24px;
-            font-weight: bold;
-        }
-        .header .search-bar {
-            flex-grow: 1;
-            margin: 0 20px;
-        }
-        .header .search-bar input {
-            width: 100%;
-            padding: 5px;
-            border: none;
-            border-radius: 5px;
-        }
-        .header .icons i {
-            margin-left: 15px;
-            cursor: pointer;
-        }
         .container {
-            text-align: center;
-            margin-top: 50px;
-        }
-        .message {
-            font-size: 24px;
-            color: #333;
-        }
-        .footer {
-            text-align: center;
-            margin-top: 20px;
-            color: #888;
-        }
-        .user-list {
-            margin-top: 30px;
-            text-align: left;
+            margin: 20px;
         }
         .user-list table {
             width: 100%;
             border-collapse: collapse;
+            margin-top: 20px;
         }
         .user-list th, .user-list td {
             padding: 10px;
@@ -85,48 +94,6 @@ if (!isset($_SESSION['login_username'])) {
             cursor: pointer;
             border-radius: 5px;
         }
-        .actions .chat:hover{
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
-            opacity: 0.8;
-        }
-        .actions .chat {
-            background-color: #5bc0de;
-            color: white;
-        }
-        .actions > a{
-            text-decoration: none;
-        }
-        .actions {
-            position: fixed;
-            right: 20px;
-            bottom: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .actions button {
-            padding: 10px;
-            font-size: 16px;
-            border: none;
-            border-radius: 50%;
-            width: 70px;
-            height: 70px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-        }
-        .icons > a{
-            text-decoration: none;
-            color: black;
-            font-weight: bold;
-            width: 100px;
-            height: 30px;
-        }
-        .midder{
-            text-align: center;
-            margin-top: 50px;
-        }
     </style>
 </head>
 <body>
@@ -138,8 +105,8 @@ if (!isset($_SESSION['login_username'])) {
                     <option value="user">User</option>
                     <option value="product">Product</option>
                 </select>
-                <input type="text" name="search" placeholder="Nhập từ khóa tìm kiếm...">
-                <button type="submit">Tìm kiếm</button>
+                <input type="text" name="search" placeholder="Enter here...">
+                <button type="submit">Find</button>
             </form>
         </div>
         <div class="icons">
@@ -148,96 +115,89 @@ if (!isset($_SESSION['login_username'])) {
             <a href="unset.php"><i class="fa-solid fa-door-open"></i></a>
         </div>
     </div>
+
     <div class="container">
-        <div class="message">Quản lý tài khoản</div>
         <div class="user-list">
             <table>
                 <thead>
                     <tr>
-                        <th>B1</th>
-                        <th>B2</th>
-                        <th>B3</th>
-                        <th>B4</th>
-                        <th>b5</th>
-                        <th>B6</th>
+                        <th>Tên</th>
+                        <th>Email</th>
+                        <th>Trạng thái</th>
+                        <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
-                        $conn = connect_db();
+                    $search_type = isset($_GET['search_type']) ? $_GET['search_type'] : "user";
+                    $search_value = isset($_GET['search']) ? $_GET['search'] : "";
 
-                        if ($conn->connect_error) {
-                            die("Connection failed: " . $conn->connect_error);
-                        }
+                    if ($search_type === "user") {
+                        $sql = "SELECT ID, username, email, status FROM user WHERE username LIKE ? AND ID != 1";
+                        $stmt = $conn->prepare($sql);
+                        $search_param = "%" . $search_value . "%";
+                        $stmt->bind_param("s", $search_param);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
 
-                        $search_query = "";
-                        $search_type = isset($_GET['search_type']) ? $_GET['search_type'] : "user";
-                        $search_value = isset($_GET['search']) ? $_GET['search'] : "";
-
-                        if ($search_type === "user") {
-                            $sql = "SELECT ID, username, email, status FROM user WHERE username LIKE ? AND ID != 1";
-                            $stmt = $conn->prepare($sql);
-                            $search_param = "%" . $search_value . "%";
-                            $stmt->bind_param("s", $search_param);
-                            $stmt->execute();
-                            $result = $stmt->get_result();
-
-                            if ($result->num_rows > 0) {
-                                while($row = $result->fetch_assoc()) {
-                                    echo "<tr>
-                                        <td>{$row['username']}</td>
-                                        <td>{$row['email']}</td>
-                                        <td>" . ($row['status'] ? 'Hoạt động' : 'Đã khóa') . "</td>
-                                        <td>
-                                            <form method='POST' action='khoataikhoan.php'>
-                                                <input type='hidden' name='user_username' value='{$row['ID']}'>
-                                                <button type='submit' class='lock-btn'>" . ($row['status'] ? 'Khóa' : 'Mở khóa') . "</button>
-                                            </form>
-                                        </td>
-                                    </tr>";
-                                }
-                            } else {
-                                echo "<tr><td colspan='4'>Không có tài khoản nào phù hợp.</td></tr>";
+                        if ($result->num_rows > 0) {
+                            while ($row = $result->fetch_assoc()) {
+                                echo "<tr>
+                                    <td>{$row['username']}</td>
+                                    <td>{$row['email']}</td>
+                                    <td>" . ($row['status'] ? 'Unlock' : 'Lock') . "</td>
+                                    <td>
+                                        <form method='POST' action='khoataikhoan.php'>
+                                            <input type='hidden' name='user_id' value='{$row['ID']}'>
+                                            <input type='hidden' name='current_status' value='{$row['status']}'>
+                                            <button type='submit' class='lock-btn'>" . ($row['status'] ? 'Lock' : 'Unlock') . "</button>
+                                        </form>
+                                    </td>
+                                </tr>";
                             }
-                        } elseif ($search_type === "product") {
-                            $sql = "SELECT p.id, p.product_name, p.price, p.phone_company, p.status_products, u.username 
-                            FROM products p 
-                            LEFT JOIN user u ON p.user_username = u.username 
-                            WHERE (p.id LIKE ? OR p.product_name LIKE ? OR p.phone_company LIKE ? OR u.username LIKE ?)";
-                    
-                            // Chuẩn bị và thực thi câu lệnh SQL
-                            $stmt = $conn->prepare($sql);
-                            $search_param = "%" . $search_query . "%";
-                            $stmt->bind_param("ssss", $search_param, $search_param, $search_param, $search_param);
-                            $stmt->execute();
-                            $result = $stmt->get_result();
-                            
-                            // Hiển thị kết quả
-                            if ($result->num_rows > 0) {
-                                while ($row = $result->fetch_assoc()) {
-                                    echo "<tr>
-                                        <td>{$row['product_name']}</td>
-                                        <td>{$row['price']}</td>
-                                        <td>{$row['phone_company']}</td>
-                                        <td>{$row['username']}</td>
-                                        <td>" . ($row['status_products'] == '1' ? 'Hoạt động' : 'Đã khóa') . "</td>
-                                        <td>
-                                            <form method='POST' action='khoataikhoan.php'>
-                                                <input type='hidden' name='product_id' value='{$row['id']}'>
-                                                <button type='submit' class='lock-btn'>" . ($row['status_products'] == '1' ? 'Khóa' : 'Mở khóa') . "</button>
-                                            </form>
-                                        </td>
-                                    </tr>";
-                                }
-                            } else {
-                                echo "<tr><td colspan='6'>Không có bài đăng nào phù hợp với tìm kiếm.</td></tr>";
-                            }
+                        } else {
+                            echo "<tr><td colspan='4'>No account.</td></tr>";
                         }
-                            $stmt->close();
-                            ?>
+                    } elseif ($search_type === "product") {
+                        $sql = "SELECT p.id, p.product_name, p.price, p.phone_company, p.status_products, u.username 
+                                FROM products p 
+                                LEFT JOIN user u ON p.user_username = u.username 
+                                WHERE (p.id LIKE ? OR p.product_name LIKE ? OR p.phone_company LIKE ? OR u.username LIKE ?);";
+                        $stmt = $conn->prepare($sql);
+                        $search_param = "%" . $search_value . "%";
+                        $stmt->bind_param("ssss", $search_param, $search_param, $search_param, $search_param);
+                        $stmt->execute();
+                        $result = $stmt->get_result();
+
+                        if ($result->num_rows > 0) {
+                            while ($row = $result->fetch_assoc()) {
+                                echo "<tr>
+                                    <td>{$row['product_name']}</td>
+                                    <td>{$row['price']}</td>
+                                    <td>{$row['phone_company']}</td>
+                                    <td>{$row['username']}</td>
+                                    <td>" . ($row['status_products'] ? 'Unlock' : 'Lock') . "</td>
+                                    <td>
+                                        <form method='POST' action='khoataikhoan.php'>
+                                            <input type='hidden' name='product_id' value='{$row['id']}'>
+                                            <input type='hidden' name='current_status' value='{$row['status_products']}'>
+                                            <button type='submit' class='lock-btn'>" . ($row['status_products'] ? 'Lock' : 'Unlock') . "</button>
+                                        </form>
+                                    </td>
+                                </tr>";
+                            }
+                        } else {
+                            echo "<tr><td colspan='6'>No post</td></tr>";
+                        }
+                    }
+                    ?>
                 </tbody>
             </table>
         </div>
     </div>
 </body>
 </html>
+
+<?php
+$conn->close();
+?>

@@ -110,7 +110,9 @@ include '../backend/update_user.php';
             height: 30px;
             padding: 0;
             cursor: pointer;
+            border: 1px solid black;
             border-radius: 5px;
+            font-weight: bold;
         }
         #btn-back:hover{
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
@@ -143,22 +145,22 @@ include '../backend/update_user.php';
         <div class="logo" style="margin-left: 20px;">CSS - Cellphone Seller System</div>
     </div>
     <div class="container">
-        <h2>Thông Tin Cá Nhân</h2>
+        <h2>Personal Information</h2>
         <form method="POST">
             <div class="form-group">
-                <label for="username">Tên tài khoản: (không thể sửa tên tài khoản)</label>
+                <label for="username">Username: (can't edit)</label>
                 <input type="text" id="username" name="username" value="<?= htmlspecialchars($user['username'] ?? '') ?>" readonly>
             </div>
             <div class="form-group">
-                <label for="password">Mật khẩu:</label>
+                <label for="password">Password:</label>
                 <input type="text" id="password" name="password" value="<?= htmlspecialchars($user['password'] ?? '') ?>">
             </div>
             <div class="form-group">
-                <label for="fullname">Họ và tên:</label>
+                <label for="fullname">Fullname:</label>
                 <input type="text" id="fullname" name="fullname" value="<?= htmlspecialchars($user['fullname'] ?? '') ?>">
             </div>
             <div class="form-group">
-                <label for="birthday">Ngày Sinh:</label>
+                <label for="birthday">Date of birth:</label>
                 <input type="date" id="birthday" name="birthday" value="<?= htmlspecialchars($user['birthday'] ?? '') ?>">
             </div>
             <div class="form-group">
@@ -166,16 +168,16 @@ include '../backend/update_user.php';
                 <input type="email" id="email" name="email" value="<?= htmlspecialchars($user['email'] ?? '') ?>">
             </div>
             <div class="form-group">
-                <label for="sdt">Số Điện Thoại:</label>
+                <label for="sdt">Phone Number:</label>
                 <input type="text" id="sdt" name="sdt" value="<?= htmlspecialchars($user['sdt'] ?? '') ?>">
             </div>
             <div class="form-group">
-                <label for="address">Địa Chỉ:</label>
+                <label for="address">Address:</label>
                 <input type="text" id="address" name="address" value="<?= htmlspecialchars($user['address'] ?? '') ?>">
             </div>
-            <button class="save-btn" type="submit" name="save-btn">Lưu</button>
+            <button class="save-btn" type="submit" name="save-btn">Save</button>
             </br>
         </form>
-        <button id="btn-back"><a href="../test.php">Quay lại</a></button>
+        <a href="../test.php"><button id="btn-back">Turn back</button></a>
 </body>
 </html>
